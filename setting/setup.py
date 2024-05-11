@@ -10,6 +10,15 @@ def db_setup():
     db = Database()
 
     # create table if not exist
+    db.execute("""
+                CREATE TABLE IF NOT EXISTS USER(
+                    ID INTEGER PRIMARY KEY,
+                    NAME TEXT, 
+                    HASHED_PASSWORD TEXT,
+                    SALT TEXT,
+                    IS_CONFIRMED INTEGER
+                    );
+                """)
     db.execute(
         "CREATE TABLE IF NOT EXISTS userbooks \
             (id INTEGER PRIMARY KEY AUTOINCREMENT, \

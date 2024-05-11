@@ -2,7 +2,23 @@ import sqlite3
 
 class Database:
     def __init__(self):
-        self.cursor = sqlite3.connect('databases/mainDB.db').cursor()
+        self.connection = sqlite3.connect('databases/mainDB.db')
+        self.cursor = self.connection.cursor()
 
-    def execute(self, query):
-        self.cursor.execute(query)
+    def commit(self):
+        self.connection.commit()
+        
+    def select_account_info(self, ID : int) -> tuple:
+        self.execute(f"""
+                SELECT *
+                FROM USER
+                WHERE ID = {ID};
+                """)
+        return self.fetchone()
+    
+    def insert_account_info(self, ID : int, NAME : str, HASHED_PASSWORD : str, SALT : str, IS_CONFIRMED : int) -> None:
+        self.execute(f"""
+                INSERT INTO USER(ID, NAME, HASHED_PASSWORD, SALT, IS_CONFIRMED)
+                    VALUES ({ID}, {NAME}, {HASHED_PASSWORD}, {SALT}, {"NULL" if (IS_CONFIRMED is None) else IS_CONFIRMED});
+                """)
+        self.commit()
