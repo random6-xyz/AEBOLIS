@@ -21,12 +21,12 @@ class Database:
     def insert_account_info(self, ID : int, NAME : str, HASHED_PASSWORD : str, SALT : str, IS_CONFIRMED : int) -> None:
         self.execute("""
                 INSERT INTO USER(ID, NAME, HASHED_PASSWORD, SALT, IS_CONFIRMED)
-                    VALUES (:ID, :NAME, :HASHED_PASSWORD, :SALT, :IS_CONFIRMED);
+                VALUES (:ID, :NAME, :HASHED_PASSWORD, :SALT, :IS_CONFIRMED);
             """, {
-                "ID": ID,
+                "ID": ID, 
                 "NAME": NAME, 
                 "HASHED_PASSWORD": HASHED_PASSWORD, 
-                "SALT": SALT,
+                "SALT": SALT, 
                 "IS_CONFIRMED": ("NULL" if (IS_CONFIRMED is None) else IS_CONFIRMED)
             })
         self.commit()
