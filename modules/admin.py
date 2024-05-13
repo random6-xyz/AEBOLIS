@@ -21,7 +21,7 @@ def check_admin(session):
     if not session:
         error_messgae = "Not authenticated, You are not admin"
         return render_template("error.html", data=error_messgae), 401
-    # TODO remove if statement when deploy
+    # TODO @random6 remove if statement when deploy
     credential = get_user_info(True if session else False)
     # return if role isn't admin
     if credential["role"] != "admin":
@@ -135,19 +135,19 @@ def admin_delete_books():
     return "", 200
 
 
-# TODO admin show logs
+# TODO @random6 admin show logs
 @app.route("/admin/logs", methods=["GET"])
 def admin_logs():
     return
 
 
-# TODO admin show users
+# TODO @imStillDebugging admin show users
 @app.route("/admin/users", methods=["GET"])
 def admin_show_users():
     return
 
 
-# TODO admin modify users
+# TODO @imStillDebugging admin modify users
 @app.route("/admin/users/modify", methods=["POST"])
 def admin_modify_users():
     return

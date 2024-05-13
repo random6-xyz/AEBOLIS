@@ -29,7 +29,7 @@ def check_user(session):
     return result["code"]
 
 
-# TODO add field search
+# TODO @random6 add field search
 @app.route("/search", methods=["GET"])
 def search_books():
     # check parameters
@@ -53,7 +53,7 @@ def search_books():
     return render_template("search.html", data=data)
 
 
-# TODO add row to checkout history table
+# TODO @random6 add row to checkout history table
 # user checkout books
 @app.route("/checkout", methods=["POST"])
 def checkout():
@@ -85,13 +85,13 @@ def checkout():
     return "", 200
 
 
-# TODO show user profile
+# TODO @imStillDebugging show user profile
 @app.route("/profile", methods=["GET"])
 def profile():
     return
 
 
-# user apply books
+# user applys books
 @app.route("/apply", methods=["POST"])
 def apply():
     data = request.get_json()
