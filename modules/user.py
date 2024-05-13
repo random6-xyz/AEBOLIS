@@ -1,6 +1,7 @@
 from flask import render_template, request
 from modules import app
 from databases.db import Database
+from modules.auth import get_user_info
 
 
 # check data has essential parameters
@@ -12,6 +13,20 @@ def check_parameters(data, parameters):
             return render_template("error.html", data=error_messgae), 422
 
     return True
+
+
+# check session
+def check_user(session):
+    if not session:
+        error_messgae = "Not authenticated, You are not user"
+        return render_template("error.html", data=error_messgae), 401
+
+    result = get_user_info(session)
+    if result == False:
+        error_messgae = "Not authenticated, You are not user"
+        return render_template("error.html", data=error_messgae), 401
+
+    return result["code"]
 
 
 # TODO add field search
@@ -38,6 +53,7 @@ def search_books():
     return render_template("search.html", data=data)
 
 
+# TODO add row to checkout history table
 # user checkout books
 @app.route("/checkout", methods=["POST"])
 def checkout():
@@ -45,6 +61,10 @@ def checkout():
     result = check_parameters(data, ["title"])
     if result != True:
         return result
+
+    student_number_result = check_user(request.cookies.get("session"))
+    if type(student_number_result) != str:
+        return student_number_result
 
     # check if books is available
     result = Database().execute(
@@ -71,7 +91,27 @@ def profile():
     return
 
 
-# TODO apply books
+# user apply books
 @app.route("/apply", methods=["POST"])
 def apply():
-    return
+    data = request.get_json()
+    result = check_parameters(data, ["title", "publisher", "writer", "reason"])
+    if result != True:
+        return result
+
+    student_number_result = check_user(request.cookies.get("session"))
+    if type(student_number_result) != str:
+        return student_number_result
+
+    Database().execute(
+        "INSERT INTO userapplys (student_number, title, publisher, writer, reason, confirm) VALUES (?, ?, ?, ?, ?, 0)",
+        (
+            int(student_number_result),
+            data["title"],
+            data["publisher"],
+            data["writer"],
+            data["reason"],
+        ),
+    )
+
+    return "", 200

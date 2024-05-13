@@ -11,14 +11,14 @@ def db_setup():
 
     db.execute(
         """
-                CREATE TABLE IF NOT EXISTS USER(
-                    ID INTEGER PRIMARY KEY,
-                    NAME TEXT, 
-                    HASHED_PASSWORD TEXT,
-                    SALT TEXT,
-                    IS_CONFIRMED INTEGER
-                    );
-                """
+        CREATE TABLE IF NOT EXISTS USER(
+            ID INTEGER PRIMARY KEY,
+            NAME TEXT, 
+            HASHED_PASSWORD TEXT,
+            SALT TEXT,
+            IS_CONFIRMED INTEGER
+        );
+    """
     )
 
     db.execute(
@@ -40,7 +40,7 @@ def db_setup():
             publisher TEXT NOT NULL,
             writer TEXT NOT NULL,
             reason TEXT NOT NULL,
-            confirm INTEGER,   
+            confirm INTEGER
         );
     """
     )

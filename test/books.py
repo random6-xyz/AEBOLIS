@@ -75,6 +75,23 @@ def checkout_book():
         return response.text
 
 
+def apply_book():
+    header = {"Content-type": "application/json"}
+    cookies = {"session": "user"}
+    data = {
+        "title": "Apply Book",
+        "writer": "I'm writer",
+        "publisher": "We Publish books",
+        "reason": "I have to read",
+    }
+
+    response = post(url=URL + "/apply", json=data, headers=header, cookies=cookies)
+    if response.status_code == 200:
+        return True
+    else:
+        return response.text
+
+
 class SampleTest(unittest.TestCase):
     def test_add_book(self):
         result = add_book()
@@ -93,6 +110,11 @@ class SampleTest(unittest.TestCase):
 
     def test_checkout_book(self):
         result = checkout_book()
+        print(result)
+        self.assertTrue(result == True)
+
+    def test_apply_book(self):
+        result = apply_book()
         print(result)
         self.assertTrue(result == True)
 

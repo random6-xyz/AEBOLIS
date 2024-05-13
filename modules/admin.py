@@ -118,7 +118,7 @@ def admin_modify_books():
     return "", 200
 
 
-# TODO admin delete books
+# admin delete book
 @app.route("/admin/books/delete", methods=["POST"])
 def admin_delete_books():
     data = request.get_json()
