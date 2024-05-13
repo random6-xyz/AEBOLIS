@@ -1,6 +1,6 @@
 from modules import app
-from setting.setup import *
+from setting.setup import setup, ip, ports
 
 if __name__ == "__main__":
-    db_setup()
+    setup()
     app.run(ip, port=ports)
