@@ -58,3 +58,27 @@ def admin_modify_books():
 @app.route("/admin/books/delete", methods=["POST"])
 def admin_delete_books():
     return
+
+
+# TODO admin show logs
+@app.route("/admin/logs", methods=["GET"])
+def admin_logs():
+    return
+
+
+# TODO admin delete books
+@app.route("/admin/books/delete", methods=["POST"])
+def admin_delete_books():
+    return
+
+
+# TODO admin show users
+@app.route("/admin/users", methods=["GET"])
+def admin_show_users():
+    return
+
+
+# TODO admin modify users
+@app.route("/admin/users/modify", methods=["POST"])
+def admin_modify_users():
+    return

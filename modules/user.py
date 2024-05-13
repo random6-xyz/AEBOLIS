@@ -3,6 +3,7 @@ from modules import app
 from databases.db import Database
 
 
+# TODO add field search
 @app.route("/search", methods=["GET"])
 def search_books():
     # check parameters
@@ -24,3 +25,21 @@ def search_books():
     # toss data to frontend
     data = set(result) if result else None
     return render_template("search.html", data=data)
+
+
+# TODO checkout books
+@app.route("/checkout", methods=["POST"])
+def checkout():
+    return
+
+
+# TODO show user profile
+@app.route("/profile", methods=["GET"])
+def profile():
+    return
+
+
+# TODO apply books
+@app.route("/apply", methods=["POST"])
+def profile():
+    return
