@@ -41,5 +41,5 @@ def profile():
 
 # TODO apply books
 @app.route("/apply", methods=["POST"])
-def profile():
+def apply():
     return

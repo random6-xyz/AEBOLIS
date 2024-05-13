@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<body style="text-align: center;">
+    <h1>
+        Admin books
+    </h1>
+    <table>
+        <tr>
+            {% for column in ["available", "title", "writer", "publisher", "amount"] %}
+            <th style="width: 10%;">
+                {{column}}
+            </th>
+            {% endfor %}
+        </tr>
+        {% for row in data%}
+        <tr>
+            {% for data in row %}
+            <td>
+                {{data}}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
