@@ -1,6 +1,6 @@
 from flask import render_template, request, jsonify, session, redirect, url_for
 from flask_login import UserMixin, login_manager, login_user, logout_user, current_user
-from modules import app
+from modules import app, login_manager
 from databases.db import Database
 import hashlib
 import bcrypt
