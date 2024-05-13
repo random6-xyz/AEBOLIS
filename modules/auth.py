@@ -5,9 +5,10 @@ from databases.db import Database
 import hashlib
 import bcrypt
 import json
-import index
+from modules.index import index
 
 ##################### API ##############################
+
 
 # API : sign up (name, number, password) sha512 + salt
 @app.route("/signup", methods=["POST", "GET"])
@@ -24,10 +25,15 @@ def sign_up():
         if row is not None:
             return jsonify({"message": "이미 사용 중인 학번입니다."}), 400
         elif not (8 <= password <= 30):
-            return jsonify({"message": "비밀번호는 8자 이상 30자 이하이어야 합니다."}), 400
+            return (
+                jsonify({"message": "비밀번호는 8자 이상 30자 이하이어야 합니다."}),
+                400,
+            )
         elif not is_ascii_33_to_126(password):
             return (
-                jsonify({"message": "비밀번호에 사용할 수 없는 문자가 포함되어 있습니다."}),
+                jsonify(
+                    {"message": "비밀번호에 사용할 수 없는 문자가 포함되어 있습니다."}
+                ),
                 400,
             )
         else:
@@ -38,7 +44,7 @@ def sign_up():
                 student_id, username, hashed_password, salt, None
             )
             return redirect(url_for(index)), 200
-        
+
     return render_template("signup.html")
 
 
@@ -58,9 +64,9 @@ def sign_in():
         ):
             user = User(row)
             login_user(user)
-            return redirect(url_for("index")), 200
+            return redirect(url_for(index)), 200
         return jsonify({"message": "이미 사용 중인 학번입니다."}), 403
-    
+
     return render_template("signin.html")
 
 
@@ -71,6 +77,7 @@ def sign_out():
         logout_user()
         return redirect(url_for("index"))
     return render_template("signout.html")
+
 
 # API : delete account
 @app.route("/delete_account", methods=["POST", "GET"])
@@ -89,7 +96,7 @@ def delete_account():
             Database().delete_account(row[0])
             return redirect(url_for("index")), 200
         return jsonify({"message": "올바르지 않은 계정 정보입니다."}), 400
-    
+
     return render_template("delete_account.html")
 
 

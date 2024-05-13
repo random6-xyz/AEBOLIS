@@ -1,15 +1,19 @@
 from databases.db import Database
 from os import getenv
+from flask_login import LoginManager
+from modules import app
 
 # settings
 ip = "0.0.0.0"
 ports = getenv("PORT", 7777)
 
+
 def db_setup():
     db = Database()
 
     # create table if not exist
-    db.execute("""
+    db.execute(
+        """
                 CREATE TABLE IF NOT EXISTS USER(
                     ID INTEGER PRIMARY KEY,
                     NAME TEXT NOT NULL, 
@@ -18,4 +22,17 @@ def db_setup():
                     IS_ADMIN INTEGER NOT NULL,
                     IS_CONFIRMED INTEGER
                     );
-                """)
+                """
+    )
+
+
+def login_setup():
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    app.config["SESSION_PERMANENT"] = False
+    app.secret_key = "vjRP_TiR5EgnrExRI3QxRg"
+
+
+def setup():
+    db_setup()
+    login_setup()
