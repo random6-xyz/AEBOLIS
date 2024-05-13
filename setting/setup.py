@@ -40,7 +40,19 @@ def db_setup():
             publisher TEXT NOT NULL,
             writer TEXT NOT NULL,
             reason TEXT NOT NULL,
-            confirm INTEGER
+            confirm INTEGER NOT NULL
+        );
+    """
+    )
+
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS checkout_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_number INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            return INTEGER NOT NULL,
+            time TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime'))
         );
     """
     )

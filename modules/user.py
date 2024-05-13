@@ -53,7 +53,6 @@ def search_books():
     return render_template("search.html", data=data)
 
 
-# TODO @random6 add row to checkout history table
 # user checkout books
 @app.route("/checkout", methods=["POST"])
 def checkout():
@@ -80,6 +79,15 @@ def checkout():
     # sub 1 amount
     Database().execute(
         "UPDATE userbooks SET amount=? WHERE title=?", (result[0][0] - 1, data["title"])
+    )
+
+    # insert row to checkout_history table
+    Database().execute(
+        "INSERT INTO checkout_history (student_number, title, return) VALUES (?, ?, 0);",
+        (
+            int(student_number_result),
+            data["title"],
+        ),
     )
 
     return "", 200

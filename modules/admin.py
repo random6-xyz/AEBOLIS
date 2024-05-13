@@ -46,6 +46,7 @@ def check_parameters_admin(data, parameters, session):
     return True
 
 
+# TODO @random6 add field search
 # add books
 @app.route("/admin/books/add", methods=["POST"])
 def admin_add_books():
@@ -74,6 +75,7 @@ def admin_add_books():
     return "", 200
 
 
+# TODO @random6 add field search
 # show all books to admin
 @app.route("/admin/books/show", methods=["GET"])
 def admin_show_books():
@@ -91,6 +93,7 @@ def admin_show_books():
     return render_template("admin/books.html", data=db_result), 200
 
 
+# TODO @random6 add field search
 # modifying books for admin
 @app.route("/admin/books/modify", methods=["POST"])
 def admin_modify_books():
@@ -138,6 +141,12 @@ def admin_delete_books():
 # TODO @random6 admin show logs
 @app.route("/admin/logs", methods=["GET"])
 def admin_logs():
+    return
+
+
+# TODO @random6 admin show checkout history
+@app.route("/admin/checkout", methods=["GET"])
+def admin_checkout():
     return
 
 

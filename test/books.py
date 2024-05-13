@@ -53,7 +53,7 @@ def modify_books():
 def delete_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "admin"}
-    data = {"title": "New Book"}
+    data = {"title": "The Book"}
 
     response = post(
         url=URL + "/admin/books/delete", cookies=cookies, json=data, headers=header
@@ -66,9 +66,10 @@ def delete_book():
 
 def checkout_book():
     header = {"Content-type": "application/json"}
+    cookies = {"session": "user"}
     data = {"title": "The Book"}
 
-    response = post(url=URL + "/checkout", json=data, headers=header)
+    response = post(url=URL + "/checkout", json=data, headers=header, cookies=cookies)
     if response.status_code == 200:
         return True
     else:
