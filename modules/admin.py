@@ -144,10 +144,33 @@ def admin_logs():
     return
 
 
-# TODO @random6 admin show checkout history
-@app.route("/admin/checkout", methods=["GET"])
+# show and modify checkout history
+@app.route("/admin/checkout", methods=["GET", "POST"])
 def admin_checkout():
-    return
+    result = check_admin(True if request.cookies.get("session") else False)
+    if result != True:
+        return result
+
+    # show checkout history
+    if request.method == "GET":
+        result = Database().execute(
+            "SELECT student_number, title, return, time FROM checkout_history"
+        )
+        return render_template("admin/checkout.html", data=result), 200
+
+    # modify checkout history
+    elif request.method == "POST":
+        data = request.get_json()
+        result = check_parameters(data, ["title", "return"])
+        if result != True:
+            return result
+
+        Database().execute(
+            "UPDATE checkout_history SET return=? WHERE title=?",
+            [data["title"], data["return"]],
+        )
+
+        return "", 200
 
 
 # TODO @imStillDebugging admin show users
