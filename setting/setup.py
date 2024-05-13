@@ -9,7 +9,6 @@ ports = getenv("PORT", 7777)
 def db_setup():
     db = Database()
 
-    # create table if not exist
     db.execute(
         """
                 CREATE TABLE IF NOT EXISTS USER(
@@ -30,4 +29,18 @@ def db_setup():
             writer TEXT NOT NULL, \
             publisher TEXT NOT NULL, \
             amount INTEGERS NOT NULL);"
+    )
+
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS userapplys (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_number INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            publisher TEXT NOT NULL,
+            writer TEXT NOT NULL,
+            reason TEXT NOT NULL,
+            confirm INTEGER,   
+        );
+    """
     )

@@ -88,7 +88,7 @@ def admin_show_books():
         error_message = "There are no books"
         return render_template("error.html", data=error_message), 401
 
-    return render_template("admin/books.html", data=db_result)
+    return render_template("admin/books.html", data=db_result), 200
 
 
 # modifying books for admin
