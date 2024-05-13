@@ -19,8 +19,8 @@ def search_books():
             LIKE ?",
             ["%" + request.args["query"] + "%"],
         ):
-            result.append(row)
+            result.append(row[1:])
 
     # toss data to frontend
-    data = result if result else None
-    return render_template("search.html", data=data[1:])
+    data = set(result) if result else None
+    return render_template("search.html", data=data)

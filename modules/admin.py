@@ -32,9 +32,10 @@ def admin_add_books():
             return render_template("error.html", data=error_messgae), 422
 
     # insert data to db
+    
     Database().execute(
         "INSERT INTO userbooks (available, title, writer, publisher, amount) \
-            VALUES (?, ?, ?, ?, ?)",
+            VALUES (?, ?, ?, ?, ?);",
         (
             data["available"],
             data["title"],

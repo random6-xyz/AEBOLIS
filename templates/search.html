@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<body>
+<body style="text-align: center;">
     <h1>
         Search Result
     </h1>
     <table>
         <tr>
             {% for column in ["available", "title", "writer", "publisher", "amount"] %}
-            <th>
+            <th style="width: 10%;">
                 {{column}}
             </th>
             {% endfor %}
