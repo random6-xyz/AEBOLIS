@@ -15,6 +15,7 @@ def db_setup():
                     NAME TEXT NOT NULL, 
                     HASHED_PASSWORD TEXT NOT NULL,
                     SALT TEXT NOT NULL,
+                    IS_ADMIN INTEGER NOT NULL,
                     IS_CONFIRMED INTEGER
                     );
                 """)
