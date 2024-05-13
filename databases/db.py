@@ -6,6 +6,7 @@ class Database:
         self.connection = sqlite3.connect("databases/mainDB.db", isolation_level=None)
         self.cursor = self.connection.cursor()
 
+    # common command execute function
     def execute(self, query, arguments=[]):
         self.cursor.execute(query, arguments)
         return self.cursor.fetchall()

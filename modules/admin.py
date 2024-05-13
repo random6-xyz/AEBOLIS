@@ -1,4 +1,4 @@
-from flask import render_template, request, make_response
+from flask import render_template, request
 from modules import app
 from databases.db import Database
 from modules.auth import get_user_info
@@ -10,7 +10,7 @@ def admin_add_books():
     session = request.cookies.get("session")
     # TODO remove if statement when deploy
     credential = get_user_info(True if session else False)
-    print(credential)
+
     # return if role isn't admin
     if credential["role"] != "admin":
         error_messgae = "Not authenticated, You are not admin"
@@ -46,3 +46,15 @@ def admin_add_books():
     )
 
     return "", 200
+
+
+# TODO admin modify books
+@app.route("/admin/books/modify", methods=["POST"])
+def admin_modify_books():
+    return
+
+
+# TODO admin delete books
+@app.route("/admin/books/delete", methods=["POST"])
+def admin_delete_books():
+    return
