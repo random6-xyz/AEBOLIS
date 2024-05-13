@@ -3,6 +3,17 @@ from modules import app
 from databases.db import Database
 
 
+# check data has essential parameters
+def check_parameters(data, parameters):
+    data = request.get_json()
+    for attr in parameters:
+        if attr not in data:
+            error_messgae = f'"{attr}" not in post data'
+            return render_template("error.html", data=error_messgae), 422
+
+    return True
+
+
 # TODO add field search
 @app.route("/search", methods=["GET"])
 def search_books():
@@ -27,10 +38,31 @@ def search_books():
     return render_template("search.html", data=data)
 
 
-# TODO checkout books
+# user checkout books
 @app.route("/checkout", methods=["POST"])
 def checkout():
-    return
+    data = request.get_json()
+    result = check_parameters(data, ["title"])
+    if result != True:
+        return result
+
+    # check if books is available
+    result = Database().execute(
+        "SELECT amount, available FROM userbooks WHERE title=?", (data["title"],)
+    )
+    if not result:
+        error_message = f"No name {data['title']} in DataBase"
+        return render_template("error.html", data=error_message), 401
+    if result[0][0] <= 0 or result[0][1] == 0:
+        error_message = f"You can't borrow {data['title']}"
+        return render_template("error.html", data=error_message), 401
+
+    # sub 1 amount
+    Database().execute(
+        "UPDATE userbooks SET amount=? WHERE title=?", (result[0][0] - 1, data["title"])
+    )
+
+    return "", 200
 
 
 # TODO show user profile

@@ -46,6 +46,7 @@ def check_parameters_admin(data, parameters, session):
     return True
 
 
+# add books
 @app.route("/admin/books/add", methods=["POST"])
 def admin_add_books():
     data = request.get_json()
@@ -73,6 +74,7 @@ def admin_add_books():
     return "", 200
 
 
+# show all books to admin
 @app.route("/admin/books/show", methods=["GET"])
 def admin_show_books():
     result = check_admin(True if request.cookies.get("session") else False)
@@ -89,17 +91,48 @@ def admin_show_books():
     return render_template("admin/books.html", data=db_result)
 
 
-# TODO admin modify books
+# modifying books for admin
 @app.route("/admin/books/modify", methods=["POST"])
 def admin_modify_books():
-    return
+    data = request.get_json()
+    result = check_parameters_admin(
+        data,
+        ["old_title", "available", "title", "writer", "publisher", "amount"],
+        request.cookies.get("session"),
+    )
+    if result != True:
+        return result
+
+    Database().execute(
+        "UPDATE userbooks SET available=?, title=?, writer=?, publisher=?, amount=? WHERE title=?",
+        (
+            data["available"],
+            data["title"],
+            data["writer"],
+            data["publisher"],
+            data["amount"],
+            data["old_title"],
+        ),
+    )
+
+    return "", 200
 
 
 # TODO admin delete books
 @app.route("/admin/books/delete", methods=["POST"])
 def admin_delete_books():
+    data = request.get_json()
+    result = check_parameters_admin(
+        data,
+        ["title"],
+        request.cookies.get("session"),
+    )
+    if result != True:
+        return result
 
-    return
+    Database().execute("DELETE FROM userbooks WHERE title=?", (data["title"],))
+
+    return "", 200
 
 
 # TODO admin show logs
