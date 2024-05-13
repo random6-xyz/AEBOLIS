@@ -66,12 +66,6 @@ def admin_logs():
     return
 
 
-# TODO admin delete books
-@app.route("/admin/books/delete", methods=["POST"])
-def admin_delete_books():
-    return
-
-
 # TODO admin show users
 @app.route("/admin/users", methods=["GET"])
 def admin_show_users():
