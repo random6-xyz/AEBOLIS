@@ -39,7 +39,7 @@ def modify_books():
         "publisher": "We Publish books",
         "amount": 3,
         "field": "IT",
-        "category": "IT",
+        "category": ["Math", "Art"],
     }
 
     response = post(

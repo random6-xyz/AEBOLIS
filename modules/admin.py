@@ -87,19 +87,27 @@ def admin_add_books():
     return "", 200
 
 
-# TODO: @random6 add field search
 # modifying books for admin
 @app.route("/admin/books/modify", methods=["POST"])
 def admin_modify_books():
     data = request.get_json()
     result = check_parameters_admin(
         data,
-        ["old_title", "available", "title", "writer", "publisher", "amount"],
+        [
+            "old_title",
+            "available",
+            "title",
+            "writer",
+            "publisher",
+            "amount",
+            "category",
+        ],
         request.cookies.get("session"),
     )
     if result != True:
         return result
 
+    # Update userbooks table
     Database().execute(
         "UPDATE userbooks SET available=?, title=?, writer=?, publisher=?, amount=? WHERE title=?",
         (
@@ -111,6 +119,20 @@ def admin_modify_books():
             data["old_title"],
         ),
     )
+
+    # Update book_field table
+    id = Database().execute("SELECT id FROM userbooks WHERE title=?", (data["title"],))[
+        0
+    ][0]
+    Database().execute("DELETE FROM book_field WHERE book_id=?", (id,))
+    for category in data["category"]:
+        Database().execute(
+            "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
+            (
+                id,
+                category,
+            ),
+        )
 
     return "", 200
 
