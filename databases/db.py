@@ -1,9 +1,13 @@
 import sqlite3
 
+
 class Database:
     def __init__(self):
-        self.connection = sqlite3.connect("databases/mainDB.db")
+        self.connection = sqlite3.connect("databases/mainDB.db", isolation_level=None)
         self.cursor = self.connection.cursor()
+
+    def execute(self, query, arguments=[]):
+        self.cursor.execute(query, arguments)
 
     def commit(self):
         self.connection.commit()
@@ -17,7 +21,7 @@ class Database:
             """,
             {"ID": ID},
         )
-        return self.fetchone()
+        return self.cursor.fetchone()
 
     def insert_account_info(
         self, ID: int, NAME: str, HASHED_PASSWORD: str, SALT: str, IS_CONFIRMED: int
@@ -35,7 +39,6 @@ class Database:
                 "IS_CONFIRMED": ("NULL" if (IS_CONFIRMED is None) else IS_CONFIRMED),
             },
         )
-        self.commit()
 
     def delete_user(self, ID: int):
         self.execute(
@@ -45,4 +48,3 @@ class Database:
             """,
             {"ID": ID},
         )
-        self.commit()

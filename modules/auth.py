@@ -1,10 +1,16 @@
 from flask import render_template, request, jsonify, session, redirect, url_for
-from flask_login import UserMixin, login_manager, login_user, logout_user, current_user
-from modules import app, login_manager
+from flask_login import (
+    UserMixin,
+    login_manager,
+    login_user,
+    logout_user,
+    current_user,
+    login_required,
+)
+from setting.setup import app, login_manager
 from databases.db import Database
 import hashlib
 import bcrypt
-import json
 from modules.index import index
 
 ##################### API ##############################
@@ -24,7 +30,7 @@ def sign_up():
 
         if row is not None:
             return jsonify({"message": "이미 사용 중인 학번입니다."}), 400
-        elif not (8 <= password <= 30):
+        elif not (8 <= len(password) <= 30):
             return (
                 jsonify({"message": "비밀번호는 8자 이상 30자 이하이어야 합니다."}),
                 400,
@@ -38,12 +44,12 @@ def sign_up():
             )
         else:
             # if user information is valid for sign-up
-            salt = bcrypt.gensalt()
+            salt = (bcrypt.gensalt()).decode("utf-8")
             hashed_password = hash_password(password, salt)
             Database().insert_account_info(
                 student_id, username, hashed_password, salt, None
             )
-            return redirect(url_for(index)), 200
+            return redirect(url_for("index"))
 
     return render_template("signup.html")
 
@@ -64,7 +70,7 @@ def sign_in():
         ):
             user = User(row)
             login_user(user)
-            return redirect(url_for(index)), 200
+            return redirect(url_for("index"))
         return jsonify({"message": "이미 사용 중인 학번입니다."}), 403
 
     return render_template("signin.html")
@@ -72,6 +78,7 @@ def sign_in():
 
 # API : sign out, delete session
 @app.route("/signout", methods=["POST", "GET"])
+@login_required
 def sign_out():
     if request.method == "POST":
         logout_user()
@@ -81,6 +88,7 @@ def sign_out():
 
 # API : delete account
 @app.route("/delete_account", methods=["POST", "GET"])
+@login_required
 def delete_account():
     if request.method == "POST":
         password = request.form["password"]
@@ -93,8 +101,8 @@ def delete_account():
             and row[5]
         ):
             logout_user()
-            Database().delete_account(row[0])
-            return redirect(url_for("index")), 200
+            Database().delete_user(row[0])
+            return redirect(url_for("index"))
         return jsonify({"message": "올바르지 않은 계정 정보입니다."}), 400
 
     return render_template("delete_account.html")
