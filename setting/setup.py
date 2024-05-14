@@ -2,7 +2,6 @@ from databases.db import Database
 from os import getenv
 from flask_login import LoginManager
 from modules import app
-import os
 
 # settings
 ip = "0.0.0.0"
@@ -32,8 +31,7 @@ def db_setup():
 def login_setup():
     login_manager.init_app(app)
     app.config["SESSION_PERMANENT"] = False
-    # app.secret_key = os.environ.get('FLASK_SECRET_KEY')
-    app.secret_key = "secretKeyForTest"
+    app.secret_key = getenv('FLASK_SECRET_KEY', "secretKeyForTest")
 
 
 def setup():
