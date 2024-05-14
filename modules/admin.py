@@ -144,6 +144,12 @@ def admin_logs():
     return
 
 
+# TODO @random6 admin show applys
+@app.route("/admin/apply", methods=["GET", "POST"])
+def admin_apply():
+    return
+
+
 # show and modify checkout history
 @app.route("/admin/checkout", methods=["GET", "POST"])
 def admin_checkout():
