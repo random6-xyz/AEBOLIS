@@ -91,7 +91,7 @@ def admin_add_books():
 # show all books to admin
 @app.route("/admin/books/show", methods=["GET"])
 def admin_show_books():
-    result = check_admin(True if request.cookies.get("session") else False)
+    result = check_admin(request.cookies.get("session"))
     if result != True:
         return result
 
