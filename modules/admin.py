@@ -46,14 +46,13 @@ def check_parameters_admin(data, parameters, session):
     return True
 
 
-# TODO @random6 add field search
 # add books
 @app.route("/admin/books/add", methods=["POST"])
 def admin_add_books():
     data = request.get_json()
     result = check_parameters_admin(
         data,
-        ["available", "title", "writer", "publisher", "amount"],
+        ["available", "title", "writer", "publisher", "amount", "field"],
         request.cookies.get("session"),
     )
     if result != True:
@@ -71,6 +70,19 @@ def admin_add_books():
             data["amount"],
         ),
     )
+
+    book_id = Database().execute(
+        "SELECT id FROM userbooks WHERE title=?", (data["title"],)
+    )
+
+    for field in data["field"]:
+        Database().execute(
+            "INSERT INTO book_field (book_id, field) VALUES (?, ?)",
+            (
+                book_id[0][0],
+                field,
+            ),
+        )
 
     return "", 200
 

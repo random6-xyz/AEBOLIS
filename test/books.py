@@ -16,6 +16,7 @@ def add_book():
         "amount": 3,
         "field": "IT",
         "category": "IT",
+        "field": ["IT", "Novel"],
     }
 
     response = post(
