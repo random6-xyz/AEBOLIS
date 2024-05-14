@@ -21,7 +21,7 @@ def check_admin(session):
     if not session:
         error_messgae = "Not authenticated, You are not admin"
         return render_template("error.html", data=error_messgae), 401
-    # TODO @random6 remove if statement when deploy
+    # FIXME @random6 remove if statement when deploy
     credential = get_user_info(True if session else False)
     # return if role isn't admin
     if credential["role"] != "admin":
@@ -144,10 +144,50 @@ def admin_logs():
     return
 
 
-# TODO @random6 admin show applys
+# admin show applys
 @app.route("/admin/apply", methods=["GET", "POST"])
 def admin_apply():
-    return
+    result = check_admin(request.cookies.get("session"))
+    if result != True:
+        return result
+
+    # show apply to admin
+    if request.method == "GET":
+        data = Database().execute(
+            "SELECT student_number, title, publisher, writer, reason, confirm FROM userapplys"
+        )
+        return render_template("admin/apply.html", data=data), 200
+
+    # modify apply
+    elif request.method == "POST":
+        data = request.get_json()
+        result = check_parameters(data, ["title", "method", "student_number"])
+        if result != True:
+            return result
+
+        if data["method"] == "delete":
+            Database().execute(
+                "DELETE FROM userapplys WHERE title=? and student_number=?",
+                (
+                    data["title"],
+                    data["student_number"],
+                ),
+            )
+            return "", 200
+
+        elif data["method"] == "confirm":
+            Database().execute(
+                "UPDATE userapplys SET confirm=1 WHERE title=? and student_number=?",
+                (
+                    data["title"],
+                    data["student_number"],
+                ),
+            )
+            return "", 200
+
+        else:
+            error_messgae = f"Not allowed method"
+            return render_template("error.html", data=error_messgae), 422
 
 
 # show and modify checkout history

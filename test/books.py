@@ -93,6 +93,42 @@ def apply_book():
         return response.text
 
 
+def admin_delete_apply_book():
+    header = {"Content-type": "application/json"}
+    cookies = {"session": "admin"}
+    data = {
+        "title": "Apply Book",
+        "student_number": "22222222",
+        "method": "delete",
+    }
+
+    response = post(
+        url=URL + "/admin/apply", json=data, headers=header, cookies=cookies
+    )
+    if response.status_code == 200:
+        return True
+    else:
+        return response.text
+
+
+def admin_modify_apply_book():
+    header = {"Content-type": "application/json"}
+    cookies = {"session": "admin"}
+    data = {
+        "title": "Apply Book",
+        "student_number": "22222222",
+        "method": "confirm",
+    }
+
+    response = post(
+        url=URL + "/admin/apply", json=data, headers=header, cookies=cookies
+    )
+    if response.status_code == 200:
+        return True
+    else:
+        return response.text
+
+
 class SampleTest(unittest.TestCase):
     def test_add_book(self):
         result = add_book()
@@ -116,6 +152,16 @@ class SampleTest(unittest.TestCase):
 
     def test_apply_book(self):
         result = apply_book()
+        print(result)
+        self.assertTrue(result == True)
+
+    def test_admin_delete_apply_book(self):
+        result = admin_delete_apply_book()
+        print(result)
+        self.assertTrue(result == True)
+
+    def test_admin_modify_apply_book(self):
+        result = admin_modify_apply_book()
         print(result)
         self.assertTrue(result == True)
 
