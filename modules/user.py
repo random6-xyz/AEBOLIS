@@ -29,7 +29,7 @@ def check_user(session):
     return result["code"]
 
 
-# TODO @random6 add field search
+# user book search
 @app.route("/search", methods=["GET"])
 def search_books():
     # check parameters
@@ -37,19 +37,36 @@ def search_books():
         error_message = '"query" argument missing'
         return render_template("error.html", data=error_message), 422
 
+    # find book data maching with query and [title, writer, publisher]
+    query = request.args["query"]
     result = []
     for field in ["title", "writer", "publisher"]:
         for row in Database().execute(
-            f"SELECT * \
-            FROM userbooks \
-            WHERE {field} \
-            LIKE ?",
-            ["%" + request.args["query"] + "%"],
+            f"SELECT id FROM userbooks WHERE {field} LIKE ?",
+            ["%" + query + "%"],
         ):
-            result.append(row[1:])
+            result.append(row[0])
+
+    # find book id matching with query and field
+    field_result = Database().execute(
+        "SELECT book_id FROM book_field WHERE category=?", [query]
+    )
+
+    # query book data and categories with book id
+    for id in set(field_result + result):
+        row = list(
+            Database().execute("SELECT * FROM userbooks WHERE id=?", (id[0],))[0][1:]
+        )
+        categories = []
+        for category in Database().execute(
+            "SELECT category FROM book_field WHERE book_id=?", (id[0],)
+        ):
+            categories.append(category[0])
+        row.append(", ".join(categories))
+        result.append(row)
 
     # toss data to frontend
-    data = set(result) if result else None
+    data = result
     return render_template("search.html", data=data)
 
 
@@ -93,7 +110,7 @@ def checkout():
     return "", 200
 
 
-# TODO @imStillDebugging show user profile
+# TODO: @imStillDebugging show user profile
 @app.route("/profile", methods=["GET"])
 def profile():
     return

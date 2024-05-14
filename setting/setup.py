@@ -61,8 +61,7 @@ def db_setup():
         """
         CREATE TABLE IF NOT EXISTS book_field (
             book_id INTEGER NOT NULL,
-            field TEXT NOT NULL,
-            FOREIGN KEY(book_id) REFERENCES userbooks(id)
+            category TEXT NOT NULL
         );
     """
     )

@@ -21,7 +21,7 @@ def check_admin(session):
     if not session:
         error_messgae = "Not authenticated, You are not admin"
         return render_template("error.html", data=error_messgae), 401
-    # FIXME @random6 remove if statement when deploy
+    # FIXME: @random6 remove if statement when deploy
     credential = get_user_info(True if session else False)
     # return if role isn't admin
     if credential["role"] != "admin":
@@ -77,7 +77,7 @@ def admin_add_books():
 
     for field in data["field"]:
         Database().execute(
-            "INSERT INTO book_field (book_id, field) VALUES (?, ?)",
+            "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
             (
                 book_id[0][0],
                 field,
@@ -87,7 +87,7 @@ def admin_add_books():
     return "", 200
 
 
-# TODO @random6 add field search
+# TODO: @random6 add field search
 # show all books to admin
 @app.route("/admin/books/show", methods=["GET"])
 def admin_show_books():
@@ -105,7 +105,7 @@ def admin_show_books():
     return render_template("admin/books.html", data=db_result), 200
 
 
-# TODO @random6 add field search
+# TODO: @random6 add field search
 # modifying books for admin
 @app.route("/admin/books/modify", methods=["POST"])
 def admin_modify_books():
@@ -150,7 +150,7 @@ def admin_delete_books():
     return "", 200
 
 
-# TODO @random6 admin show logs
+# TODO: @random6 admin show logs
 @app.route("/admin/logs", methods=["GET"])
 def admin_logs():
     return
@@ -231,13 +231,13 @@ def admin_checkout():
         return "", 200
 
 
-# TODO @imStillDebugging admin show users
+# TODO: @imStillDebugging admin show users
 @app.route("/admin/users", methods=["GET"])
 def admin_show_users():
     return
 
 
-# TODO @imStillDebugging admin modify users
+# TODO: @imStillDebugging admin modify users
 @app.route("/admin/users/modify", methods=["POST"])
 def admin_modify_users():
     return
