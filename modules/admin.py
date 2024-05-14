@@ -88,24 +88,6 @@ def admin_add_books():
 
 
 # TODO: @random6 add field search
-# show all books to admin
-@app.route("/admin/books/show", methods=["GET"])
-def admin_show_books():
-    result = check_admin(request.cookies.get("session"))
-    if result != True:
-        return result
-
-    db_result = Database().execute(
-        "SELECT available, title, writer, publisher, amount FROM userbooks"
-    )
-    if not db_result:
-        error_message = "There are no books"
-        return render_template("error.html", data=error_message), 401
-
-    return render_template("admin/books.html", data=db_result), 200
-
-
-# TODO: @random6 add field search
 # modifying books for admin
 @app.route("/admin/books/modify", methods=["POST"])
 def admin_modify_books():
