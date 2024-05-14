@@ -235,6 +235,12 @@ def admin_checkout():
         return "", 200
 
 
+# TODO: @random6 upload .xlsx file
+@app.route("/admin/books/upload", methods=["GET", "POST"])
+def admin_upload_books():
+    return
+
+
 # TODO: @imStillDebugging admin show users
 @app.route("/admin/users", methods=["GET"])
 def admin_show_users():
