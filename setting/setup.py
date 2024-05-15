@@ -3,12 +3,16 @@ from os import getenv
 from flask_login import LoginManager
 from modules import app
 
+from logs.log import setup_acces_logger, setup_signup_logger
+
+
 # settings
 ip = "0.0.0.0"
 ports = getenv("PORT", 7777)
 
 login_manager = LoginManager()
-
+access_logger = setup_acces_logger()
+signup_logger = setup_signup_logger()
 
 def db_setup():
     db = Database()
@@ -32,7 +36,6 @@ def login_setup():
     login_manager.init_app(app)
     app.config["SESSION_PERMANENT"] = False
     app.secret_key = getenv('FLASK_SECRET_KEY', "secretKeyForTest")
-
 
 def setup():
     db_setup()
