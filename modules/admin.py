@@ -257,7 +257,7 @@ def process_xlsx(file_name):
     return book_list
 
 
-# TODO: @random6 upload .xlsx file
+# upload .xlsx file
 @app.route("/admin/books/upload", methods=["GET", "POST"])
 def admin_upload_books():
     result = check_admin(request.cookies.get("session"))
@@ -276,14 +276,14 @@ def admin_upload_books():
             return render_template("erorr.html", data=error_message), 422
 
         if not file:
-            error_message = "No file"
+            error_message = "empty file"
             return render_template("erorr.html", data=error_message), 422
 
         filename = secure_filename(file.filename)
-        file.save("./upload/" + filename)
+        file.save("./upload/" + filename + ".xlsx")
 
         # append data to database
-        xlsx = process_xlsx(filename)
+        xlsx = process_xlsx(filename + ".xlsx")
         book_info = [(data[:-1], data[-1]) for data in xlsx]
         db = Database()
         for row in book_info:
@@ -296,8 +296,11 @@ def admin_upload_books():
                     "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
                     (id, category.strip()),
                 )
-                
-    return "", 200
+
+        return render_template("admin/upload_success.html"), 200
+
+    elif request.method == "GET":
+        return render_template("admin/upload.html"), 200
 
 
 # TODO: @imStillDebugging admin show users

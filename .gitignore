@@ -264,3 +264,6 @@ pyrightconfig.json
 *.code-workspace
 
 *.db
+
+*.xlsx
+!books.xlsx
