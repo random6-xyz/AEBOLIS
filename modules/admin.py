@@ -1,9 +1,10 @@
 from flask import render_template, request
+from pandas import read_excel
+from werkzeug.utils import secure_filename
+from json import loads
 from modules import app
 from databases.db import Database
 from modules.auth import get_user_info
-from pandas import read_excel
-from werkzeug.utils import secure_filename
 from logs.log import *
 
 
@@ -157,16 +158,38 @@ def admin_delete_books():
     return "", 200
 
 
-# TODO: @random6 admin show logs
-@app.route("/admin/logs", methods=["GET"])
+# TODO: @random6 admin modify logs
+@app.route("/admin/logs", methods=["GET", "POST"])
 def admin_logs():
     result = check_admin(request.cookies.get("session"))
     if result != True:
         return result
 
-    # get logs and return
-    logs = load_userbooks_log()
-    return render_template("admin/logs.html", data=logs), 200
+    if request.method == "GET":
+        # get logs and return
+        logs = load_userbooks_log()
+        print(logs)
+        return render_template("admin/logs.html", data=logs), 200
+
+    elif request.method == "POST":
+        data = request.get_json()
+        result = check_parameters(
+            data, ["timestamp", "type", "student_number", "title", "return"]
+        )
+        if result != True:
+            return result
+
+        logs = load_userbooks_log()
+        for index, log in enumerate(logs):
+            if log["timestamp"] == data["timestamp"]:
+                logs[index]["timestamp"] = data["timestamp"]
+                logs[index]["type"] = data["type"]
+                logs[index]["student_number"] = data["student_number"]
+                logs[index]["title"] = data["title"]
+                logs[index]["return"] = data["return"]
+
+        reset_uesrbooks_log(logs)
+        return "", 200
 
 
 # admin show applys
@@ -215,6 +238,7 @@ def admin_apply():
             return render_template("error.html", data=error_messgae), 422
 
 
+# FIXME: @random6 What is the purpose of this function???
 # show and modify checkout history
 @app.route("/admin/checkout", methods=["GET", "POST"])
 def admin_checkout():

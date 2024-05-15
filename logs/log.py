@@ -8,7 +8,7 @@ def save_userbooks_log(json_data):
 
 # reset log file
 def reset_uesrbooks_log(json_data):
-    open("./logs/userbooks.log", "w+").write(dumps(json_data))
+    open("./logs/userbooks.log", "w+").write(dumps(json_data).lstrip("[").rstrip("]"))
 
 
 # Load json from userbooks.log

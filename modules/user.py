@@ -118,6 +118,7 @@ def checkout():
         "type": "checkout",
         "student_number": student_number_result,
         "title": data["title"],
+        "return": False,
     }
     save_userbooks_log(log)
 
