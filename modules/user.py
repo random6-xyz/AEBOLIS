@@ -1,7 +1,10 @@
 from flask import render_template, request
+import time
+from datetime import datetime
 from modules import app
 from databases.db import Database
 from modules.auth import get_user_info
+from logs.log import save_userbooks_log
 
 
 # check data has essential parameters
@@ -106,6 +109,18 @@ def checkout():
             data["title"],
         ),
     )
+
+    # log
+    now = time.time()
+    dt = datetime.fromtimestamp(now)
+    log = {
+        "timestamp": str(dt),
+        "level": "info",
+        "type": "checkout",
+        "student_number": student_number_result,
+        "title": data["title"],
+    }
+    save_userbooks_log(log)
 
     return "", 200
 
