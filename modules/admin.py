@@ -158,7 +158,7 @@ def admin_delete_books():
     return "", 200
 
 
-# TODO: @random6 admin modify logs
+# admin modify logs
 @app.route("/admin/logs", methods=["GET", "POST"])
 def admin_logs():
     result = check_admin(request.cookies.get("session"))
