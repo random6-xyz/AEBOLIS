@@ -4,6 +4,7 @@ from databases.db import Database
 from modules.auth import get_user_info
 from pandas import read_excel
 from werkzeug.utils import secure_filename
+from logs.log import *
 
 
 # check data has essential parameters
@@ -159,7 +160,13 @@ def admin_delete_books():
 # TODO: @random6 admin show logs
 @app.route("/admin/logs", methods=["GET"])
 def admin_logs():
-    return
+    result = check_admin(request.cookies.get("session"))
+    if result != True:
+        return result
+
+    # get logs and return
+    logs = load_userbooks_log()
+    return render_template("admin/logs.html", data=logs), 200
 
 
 # admin show applys

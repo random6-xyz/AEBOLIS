@@ -115,7 +115,6 @@ def checkout():
     dt = datetime.fromtimestamp(now)
     log = {
         "timestamp": str(dt),
-        "level": "info",
         "type": "checkout",
         "student_number": student_number_result,
         "title": data["title"],
