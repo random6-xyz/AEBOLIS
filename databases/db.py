@@ -9,6 +9,13 @@ class Database:
     # common command execute function
     def execute(self, query, arguments=[]):
         self.cursor.execute(query, arguments)
+        result = self.cursor.fetchall()
+        if not result and "INSERT" in query:
+            return self.cursor.lastrowid
+        return result
+
+    def executemany(self, query, arguments):
+        self.cursor.executemany(query, arguments)
         return self.cursor.fetchall()
 
     def commit(self):

@@ -1,5 +1,6 @@
-from requests import get, post
+from requests import post
 import unittest
+from pandas import read_excel
 
 URL = "http://" + "127.0.0.1" + ":" + "7777"
 
@@ -130,6 +131,36 @@ def admin_modify_apply_book():
         return response.text
 
 
+def process_xlsx(file_name):
+    xlsx = read_excel("./upload/" + file_name, "Sheet1")
+    book_list = []
+
+    for _, row in xlsx.iterrows():
+        book_list.append(
+            [
+                row["책 제목"],
+                row["지은이"],
+                row["출판사"],
+                row["수량"],
+                1 if row["대출여부"] == "가능" else 0,
+                row["분야"],
+            ]
+        )
+
+    return book_list
+
+
+def upload_xlsx():
+    cookies = {"session": "admin"}
+    files = {"file": open("./upload/books.xlsx", "rb")}
+
+    response = post(url=URL + "/admin/books/upload", files=files, cookies=cookies)
+    if response.status_code == 200:
+        return True
+    else:
+        return response.text
+
+
 class SampleTest(unittest.TestCase):
     def test_add_book(self):
         result = add_book()
@@ -163,6 +194,15 @@ class SampleTest(unittest.TestCase):
 
     def test_admin_modify_apply_book(self):
         result = admin_modify_apply_book()
+        print(result)
+        self.assertTrue(result == True)
+
+    def test_process_xlsx(slef):
+        result = process_xlsx("books.xlsx")
+        print(result)
+
+    def test_upload_xlsx(self):
+        result = upload_xlsx()
         print(result)
         self.assertTrue(result == True)
 

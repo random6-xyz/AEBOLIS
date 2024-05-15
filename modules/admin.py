@@ -2,6 +2,8 @@ from flask import render_template, request
 from modules import app
 from databases.db import Database
 from modules.auth import get_user_info
+from pandas import read_excel
+from werkzeug.utils import secure_filename
 
 
 # check data has essential parameters
@@ -235,10 +237,67 @@ def admin_checkout():
         return "", 200
 
 
+# process xlsx to list
+def process_xlsx(file_name):
+    xlsx = read_excel("./upload/" + file_name, "Sheet1")
+    book_list = []
+
+    for _, row in xlsx.iterrows():
+        book_list.append(
+            [
+                row["책 제목"],
+                row["지은이"],
+                row["출판사"],
+                row["수량"],
+                1 if row["대출여부"] == "가능" else 0,
+                row["분야"],
+            ]
+        )
+
+    return book_list
+
+
 # TODO: @random6 upload .xlsx file
 @app.route("/admin/books/upload", methods=["GET", "POST"])
 def admin_upload_books():
-    return
+    result = check_admin(request.cookies.get("session"))
+    if result != True:
+        return result
+
+    if request.method == "POST":
+        # save xlsx
+        if "file" not in request.files:
+            error_message = "No file"
+            return render_template("error.html", data=error_message), 422
+
+        file = request.files["file"]
+        if file.filename == "":
+            error_message = "No selected file"
+            return render_template("erorr.html", data=error_message), 422
+
+        if not file:
+            error_message = "No file"
+            return render_template("erorr.html", data=error_message), 422
+
+        filename = secure_filename(file.filename)
+        file.save("./upload/" + filename)
+
+        # append data to database
+        xlsx = process_xlsx(filename)
+        book_info = [(data[:-1], data[-1]) for data in xlsx]
+        db = Database()
+        for row in book_info:
+            id = db.execute(
+                "INSERT INTO userbooks (title, writer, publisher, amount, available) VALUES (?, ?, ?, ?, ?)",
+                row[0],
+            )
+            for category in row[1].split(","):
+                db.execute(
+                    "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
+                    (id, category.strip()),
+                )
+                
+    return "", 200
 
 
 # TODO: @imStillDebugging admin show users
