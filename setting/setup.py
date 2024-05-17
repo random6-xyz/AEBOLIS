@@ -14,6 +14,7 @@ login_manager = LoginManager()
 access_logger = setup_acces_logger()
 signup_logger = setup_signup_logger()
 
+
 def db_setup():
     db = Database()
 
@@ -35,7 +36,8 @@ def db_setup():
 def login_setup():
     login_manager.init_app(app)
     app.config["SESSION_PERMANENT"] = False
-    app.secret_key = getenv('FLASK_SECRET_KEY', "secretKeyForTest")
+    app.secret_key = getenv("FLASK_SECRET_KEY", "secretKeyForTest")
+
 
 def setup():
     db_setup()

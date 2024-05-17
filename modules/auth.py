@@ -31,16 +31,16 @@ def sign_up():
         row = Database().select_account_info(student_id)
 
         if row is not None:
-            write_signup_log('invalid signup request', student_id)
+            write_signup_log("invalid signup request", student_id)
             return jsonify({"message": "이미 사용 중인 학번입니다."}), 400
         elif not (8 <= len(password) <= 30):
-            write_signup_log('invalid signup request', student_id)
+            write_signup_log("invalid signup request", student_id)
             return (
                 jsonify({"message": "비밀번호는 8자 이상 30자 이하이어야 합니다."}),
                 400,
             )
         elif not is_ascii_33_to_126(password):
-            write_signup_log('invalid signup request', student_id)
+            write_signup_log("invalid signup request", student_id)
             return (
                 jsonify(
                     {"message": "비밀번호에 사용할 수 없는 문자가 포함되어 있습니다."}
@@ -54,7 +54,7 @@ def sign_up():
             Database().insert_account_info(
                 student_id, username, hashed_password, salt, None
             )
-            write_signup_log('Successful request for Signup', student_id)
+            write_signup_log("Successful request for Signup", student_id)
             return redirect(url_for("index"))
 
     return render_template("signup.html")
@@ -75,9 +75,9 @@ def sign_in():
         ):
             user = User(row)
             login_user(user)
-            write_access_log('Signin successed', student_id)
+            write_access_log("Signin successed", student_id)
             return redirect(url_for("index"))
-        write_access_log('Signin failed', student_id)
+        write_access_log("Signin failed", student_id)
         return jsonify({"message": "계정 정보가 올바르지 않습니다."}), 403
 
     return render_template("signin.html")
@@ -88,7 +88,7 @@ def sign_in():
 @login_required
 def sign_out():
     if request.method == "POST":
-        write_access_log('Signout successed', current_user.get_id())
+        write_access_log("Signout successed", current_user.get_id())
         logout_user()
         return redirect(url_for("index"))
     return render_template("signout.html")
@@ -110,8 +110,8 @@ def delete_account():
         ):
             logout_user()
             Database().delete_user(row[0])
-            write_signup_log('deleted acount successful', row[0])
-            write_access_log('Logout Occurs Due to Account Deletion', row[0])
+            write_signup_log("deleted acount successful", row[0])
+            write_access_log("Logout Occurs Due to Account Deletion", row[0])
             return redirect(url_for("index"))
         return jsonify({"message": "올바르지 않은 계정 정보입니다."}), 400
 
@@ -172,18 +172,22 @@ def load_user(user_id: int) -> User:
 def check_session():
     return bool(session.get("user_id"))
 
-def write_access_log(head : str, student_id : int):
-    access_logger.info(head,
-                        extra={
-                            'remote_addr': request.remote_addr,
-                            'id':  student_id,
-                            }
-                        )
-    
-def write_signup_log(head : str, student_id : int):
-    signup_logger.info(head,
-                        extra={
-                            'remote_addr': request.remote_addr,
-                            'id':  student_id,
-                            }
-                        )
+
+def write_access_log(head: str, student_id: int):
+    access_logger.info(
+        head,
+        extra={
+            "remote_addr": request.remote_addr,
+            "id": student_id,
+        },
+    )
+
+
+def write_signup_log(head: str, student_id: int):
+    signup_logger.info(
+        head,
+        extra={
+            "remote_addr": request.remote_addr,
+            "id": student_id,
+        },
+    )
