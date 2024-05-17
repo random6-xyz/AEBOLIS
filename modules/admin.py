@@ -1,7 +1,6 @@
 from flask import render_template, request
 from pandas import read_excel
 from werkzeug.utils import secure_filename
-from json import loads
 from modules import app
 from databases.db import Database
 from modules.auth import get_user_info
@@ -51,44 +50,51 @@ def check_parameters_admin(data, parameters, session):
 
 
 # add books
-@app.route("/admin/books/add", methods=["POST"])
+@app.route("/admin/books/add", methods=["POST", "GET"])
 def admin_add_books():
-    data = request.get_json()
-    result = check_parameters_admin(
-        data,
-        ["available", "title", "writer", "publisher", "amount", "field"],
-        request.cookies.get("session"),
-    )
-    if result != True:
-        return result
+    if request.method == "GET":
+        result = check_admin(request.cookies.get("session"))
+        if result != True:
+            return result
+        return render_template("admin/add_book.html"), 200
 
-    # insert data to db
-    Database().execute(
-        "INSERT INTO userbooks (available, title, writer, publisher, amount) \
-            VALUES (?, ?, ?, ?, ?);",
-        (
-            data["available"],
-            data["title"],
-            data["writer"],
-            data["publisher"],
-            data["amount"],
-        ),
-    )
+    elif request.method == "POST":
+        data = request.get_json()
+        result = check_parameters_admin(
+            data,
+            ["available", "title", "writer", "publisher", "amount", "field"],
+            request.cookies.get("session"),
+        )
+        if result != True:
+            return result
 
-    book_id = Database().execute(
-        "SELECT id FROM userbooks WHERE title=?", (data["title"],)
-    )
-
-    for field in data["field"]:
+        # insert data to db
         Database().execute(
-            "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
+            "INSERT INTO userbooks (available, title, writer, publisher, amount) \
+                VALUES (?, ?, ?, ?, ?);",
             (
-                book_id[0][0],
-                field,
+                data["available"],
+                data["title"],
+                data["writer"],
+                data["publisher"],
+                data["amount"],
             ),
         )
 
-    return "", 200
+        book_id = Database().execute(
+            "SELECT id FROM userbooks WHERE title=?", (data["title"],)
+        )
+
+        for field in data["field"].split(","):
+            Database().execute(
+                "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
+                (
+                    book_id[0][0],
+                    field.strip(),
+                ),
+            )
+
+        return "", 200
 
 
 # modifying books for admin
