@@ -29,6 +29,7 @@ def add_book():
         return response.text
 
 
+# TODO: @random6 Add fronted
 def modify_books():
     header = {"Content-type": "application/json"}
     cookies = {"session": "admin"}
@@ -52,6 +53,7 @@ def modify_books():
         return response.text
 
 
+# TODO: @random6 Add fronted
 def delete_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "admin"}
@@ -66,6 +68,7 @@ def delete_book():
         return response.text
 
 
+# TODO: @random6 Add fronted
 def checkout_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "user"}
@@ -78,6 +81,7 @@ def checkout_book():
         return response.text
 
 
+# TODO: @random6 Add fronted
 def apply_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "user"}
@@ -95,6 +99,7 @@ def apply_book():
         return response.text
 
 
+# TODO: @random6 Add fronted
 def admin_delete_apply_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "admin"}
