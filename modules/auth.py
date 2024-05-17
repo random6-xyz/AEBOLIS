@@ -11,53 +11,43 @@ from setting.setup import app, login_manager
 from databases.db import Database
 import hashlib
 import bcrypt
-from modules.index import index
-from setting.setup import access_logger, signup_logger
-from datetime import datetime
+import json
+from flask_login import UserMixin
 
-##################### API ##############################
+
+# API : return sign up page
+@app.route("/signup")
+def show_sign_up_page():
+    return render_template("signup.html")
 
 
 # API : sign up (name, number, password) sha512 + salt
-@app.route("/signup", methods=["POST", "GET"])
+@app.route("/signup", methods=["POST"])
 def sign_up():
-    if request.method == "POST":
-        # get user information from form data
-        username = request.form["username"]
-        student_id = int(request.form["student_id"])
-        password = request.form["password"]
+    username = request.form["username"]
+    student_id = int(request.form["student_id"])
+    password = request.form["password"]
 
-        # srearch user data from database
-        row = Database().select_account_info(student_id)
+    row = Database().select_account_info(student_id)
 
-        if row is not None:
-            write_signup_log('invalid signup request', student_id)
-            return jsonify({"message": "이미 사용 중인 학번입니다."}), 400
-        elif not (8 <= len(password) <= 30):
-            write_signup_log('invalid signup request', student_id)
-            return (
-                jsonify({"message": "비밀번호는 8자 이상 30자 이하이어야 합니다."}),
-                400,
-            )
-        elif not is_ascii_33_to_126(password):
-            write_signup_log('invalid signup request', student_id)
-            return (
-                jsonify(
-                    {"message": "비밀번호에 사용할 수 없는 문자가 포함되어 있습니다."}
-                ),
-                400,
-            )
-        else:
-            # if user information is valid for sign-up
-            salt = (bcrypt.gensalt()).decode("utf-8")
-            hashed_password = hash_password(password, salt)
-            Database().insert_account_info(
-                student_id, username, hashed_password, salt, None
-            )
-            write_signup_log('Successful request for Signup', student_id)
-            return redirect(url_for("index"))
+    if row is not None:
+        return jsonify({"message": "이미 사용 중인 학번입니다."}), 409
+    elif not (8 <= password <= 30):
+        return jsonify({"message": "비밀번호는 8자 이상 30자 이하이어야 합니다."}), 400
+    else:
+        salt = bcrypt.gensalt()
+        hashed_password = hash_password(password, salt)
+        Database().insert_account_info(
+            student_id, username, hashed_password, salt, None
+        )
 
-    return render_template("signup.html")
+
+def get_user_info(session):
+    if session == True:
+        info = {"role": "admin", "code": "11111111"}
+    else:
+        info = {"role": "user", "code": "22222222"}
+    return info
 
 
 # API : sign in, create session
@@ -137,10 +127,7 @@ class User(UserMixin):
         return self.__role
 
     def __repr__(self):
-        return f"USER: {self.__id} = {self.__name}"
-
-    def get_user_dict(self):
-        return {"id": self.__id, "name": self.__name, "role": self.__role}
+        return f"USER: {self.id} = {self.name}"
 
 
 # hashing password
@@ -154,36 +141,3 @@ def hash_password(origin_password: str, salt):
 # check character
 def is_ascii_33_to_126(string: str) -> bool:
     return all(("!" <= character <= "~") for character in string)
-
-
-def get_user_info(session):
-    return current_user.get_user_dict()
-
-
-# get user informations from database
-@login_manager.user_loader
-def load_user(user_id: int) -> User:
-    row = Database().select_account_info(user_id)
-    if row is not None:
-        return User(row)
-    return None
-
-
-def check_session():
-    return bool(session.get("user_id"))
-
-def write_access_log(head : str, student_id : int):
-    access_logger.info(head,
-                        extra={
-                            'remote_addr': request.remote_addr,
-                            'id':  student_id,
-                            }
-                        )
-    
-def write_signup_log(head : str, student_id : int):
-    signup_logger.info(head,
-                        extra={
-                            'remote_addr': request.remote_addr,
-                            'id':  student_id,
-                            }
-                        )

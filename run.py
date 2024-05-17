@@ -3,5 +3,5 @@ from setting.setup import setup, ip, ports
 
 
 if __name__ == "__main__":
-    setup()
+    db_setup()
     app.run(ip, port=ports, debug=True)

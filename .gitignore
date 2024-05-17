@@ -262,3 +262,8 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,flask
 
 *.code-workspace
+
+*.db
+
+*.xlsx
+!books.xlsx
