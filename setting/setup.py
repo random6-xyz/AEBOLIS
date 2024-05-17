@@ -11,6 +11,7 @@ ip = "0.0.0.0"
 ports = getenv("PORT", 7777)
 
 
+
 def db_setup():
     db = Database()
 
@@ -25,6 +26,17 @@ def db_setup():
         );
     """
     )
+
+
+def login_setup():
+    login_manager.init_app(app)
+    app.config["SESSION_PERMANENT"] = False
+    app.secret_key = getenv("FLASK_SECRET_KEY", "secretKeyForTest")
+
+
+def setup():
+    db_setup()
+    login_setup()
 
     db.execute(
         "CREATE TABLE IF NOT EXISTS userbooks \
