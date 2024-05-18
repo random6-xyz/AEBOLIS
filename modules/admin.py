@@ -205,6 +205,7 @@ def admin_delete_books():
     return "", 200
 
 
+# TODO: @random6 add title filter
 # admin modify logs
 @app.route("/admin/logs", methods=["GET", "POST"])
 def admin_logs():
@@ -239,6 +240,7 @@ def admin_logs():
         return "", 200
 
 
+# TODO: @random6 append username in table
 # admin show applys
 @app.route("/admin/apply", methods=["GET", "POST"])
 def admin_apply():

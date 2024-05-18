@@ -18,6 +18,7 @@ def check_parameters(data, parameters):
     return True
 
 
+# TODO: @random6 category search
 # check session
 def check_user(session):
     if not session:
