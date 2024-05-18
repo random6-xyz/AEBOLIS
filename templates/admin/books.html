@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
     <script>
-        function modify_book() {
+        function modify_book(event) {
             let row = event.target.parentNode.parentNode;
             let data = {
                 "old_title": row.cells[1].textContent.trim(),
@@ -16,7 +16,7 @@
             window.location.href = '/admin/books/modify?' + new URLSearchParams(data)
         }
 
-        async function delete_book() {
+        async function delete_book(event) {
             let row = event.target.parentNode.parentNode;
             let data = {};
             data["title"] = row.cells[1].textContent.trim();
@@ -61,7 +61,7 @@
             </td>
             {% endfor %}
             <td>
-                <button onclick="modify_book()">modify</button>
+                <button onclick="modify_book(event)">modify</button>
                 <button onclick="delete_book(event)">delete</button>
             </td>
         </tr>

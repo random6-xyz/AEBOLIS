@@ -95,7 +95,6 @@ def apply_book():
         return response.text
 
 
-# TODO: @random6 Add frontend
 def admin_delete_apply_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "admin"}
@@ -114,7 +113,6 @@ def admin_delete_apply_book():
         return response.text
 
 
-# TODO: @random6 Add frontend
 def admin_modify_apply_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "admin"}
