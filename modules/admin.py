@@ -49,6 +49,30 @@ def check_parameters_admin(data, parameters, session):
     return True
 
 
+# TODO: @random6 admin books
+@app.route("/admin/books", methods=["GET"])
+def admin_books():
+    result = check_admin(request.cookies.get("session"))
+    if result != True:
+        return result
+
+    book_data = []
+
+    for book_info in Database().execute("SELECT * FROM userbooks"):
+        id, book_info_data = book_info[0], book_info[1:]
+        tmp_book_info = []
+        for book_field in Database().execute(
+            "SELECT category FROM book_field WHERE book_id=?", (id,)
+        ):
+            tmp_book_info.append(*book_field)
+
+        book_info_data = list(book_info_data)
+        book_info_data.append(", ".join(tmp_book_info))
+        book_data.append(book_info_data)
+
+    return render_template("admin/books.html", data=book_data), 200
+
+
 # add books
 @app.route("/admin/books/add", methods=["POST", "GET"])
 def admin_add_books():
@@ -98,53 +122,67 @@ def admin_add_books():
 
 
 # modifying books for admin
-@app.route("/admin/books/modify", methods=["POST"])
+@app.route("/admin/books/modify", methods=["POST", "GET"])
 def admin_modify_books():
-    data = request.get_json()
-    result = check_parameters_admin(
-        data,
-        [
-            "old_title",
-            "available",
-            "title",
-            "writer",
-            "publisher",
-            "amount",
-            "category",
-        ],
-        request.cookies.get("session"),
-    )
+    result = check_admin(request.cookies.get("session"))
     if result != True:
         return result
 
-    # Update userbooks table
-    Database().execute(
-        "UPDATE userbooks SET available=?, title=?, writer=?, publisher=?, amount=? WHERE title=?",
-        (
-            data["available"],
-            data["title"],
-            data["writer"],
-            data["publisher"],
-            data["amount"],
-            data["old_title"],
-        ),
-    )
+    # return modify pages
+    if request.method == "GET":
 
-    # Update book_field table
-    id = Database().execute("SELECT id FROM userbooks WHERE title=?", (data["title"],))[
-        0
-    ][0]
-    Database().execute("DELETE FROM book_field WHERE book_id=?", (id,))
-    for category in data["category"]:
+        data = request.args
+        # for (key, value) in request.args:
+        # data[key] = value
+        return render_template("admin/modify.html", data=data), 200
+
+    # book modifying process
+    if request.method == "POST":
+        data = request.get_json()
+        result = check_parameters(
+            data,
+            [
+                "old_title",
+                "available",
+                "title",
+                "writer",
+                "publisher",
+                "amount",
+                "category",
+            ],
+        )
+        if result != True:
+            return result
+
+        # Update userbooks table
         Database().execute(
-            "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
+            "UPDATE userbooks SET available=?, title=?, writer=?, publisher=?, amount=? WHERE title=?",
             (
-                id,
-                category,
+                data["available"].strip(),
+                data["title"].strip(),
+                data["writer"].strip(),
+                data["publisher"].strip(),
+                data["amount"].strip(),
+                data["old_title"].strip(),
             ),
         )
 
-    return "", 200
+        # Update book_field table
+        id = Database().execute(
+            "SELECT id FROM userbooks WHERE title=?", (data["title"].strip(),)
+        )[0][0]
+        print(id)
+        Database().execute("DELETE FROM book_field WHERE book_id=?", (id,))
+        for category in data["category"].split(","):
+            Database().execute(
+                "INSERT INTO book_field (book_id, category) VALUES (?, ?)",
+                (
+                    id,
+                    category,
+                ),
+            )
+
+        return "", 200
 
 
 # admin delete book
@@ -159,7 +197,11 @@ def admin_delete_books():
     if result != True:
         return result
 
-    Database().execute("DELETE FROM userbooks WHERE title=?", (data["title"],))
+    db = Database()
+
+    id = db.execute("SELECT id FROM userbooks WHERE title=?", (data["title"],))[0][0]
+    db.execute("DELETE FROM userbooks WHERE title=?", (data["title"],))
+    db.execute("DELETE FROM book_field WHERE book_id=?", (id,))
 
     return "", 200
 
