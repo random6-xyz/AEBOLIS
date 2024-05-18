@@ -49,7 +49,6 @@ def check_parameters_admin(data, parameters, session):
     return True
 
 
-# TODO: @random6 admin books
 @app.route("/admin/books", methods=["GET"])
 def admin_books():
     result = check_admin(request.cookies.get("session"))

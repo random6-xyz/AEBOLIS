@@ -1,11 +1,40 @@
 <!DOCTYPE html>
+<head>
+    <script>
+        async function checkout_book(event) {
+            var row = event.target.parentNode.parentNode;
+            if (row.cells[0].textContent.trim() != "1" && Number(row.cells[4].textContent <= 0)) {
+                alert("Not available");
+                return
+            }
+
+            const data = {
+                "title" : row.cells[1].textContent.trim(),
+            }
+            const response = await fetch("/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                alert("Book checkout success");
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
+</head>
 <body style="text-align: center;">
     <h1>
         Search Result
     </h1>
     <table>
         <tr>
-            {% for column in ["available", "title", "writer", "publisher", "amount", "category"] %}
+            {% for column in ["available", "title", "writer", "publisher", "amount", "category", "buttons"] %}
             <th style="width: 10%;">
                 {{column}}
             </th>
@@ -14,10 +43,15 @@
         {% for row in data%}
         <tr>
             {% for data in row %}
-            <td>
+            <td style="width: 10%;">
                 {{data}}
             </td>
             {% endfor %}
+            {% if row[0] != 0 and row[4] != 0 %}
+            <td style="width: 10%;">
+                <button onclick="checkout_book(event)">checkout</button>
+            </td>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>

@@ -56,20 +56,22 @@ def search_books():
     )
 
     # query book data and categories with book id
+    data_result = []
     for id in set(field_result + result):
         row = list(
-            Database().execute("SELECT * FROM userbooks WHERE id=?", (id[0],))[0][1:]
+            Database().execute("SELECT * FROM userbooks WHERE id=?", (id,))[0][1:]
         )
         categories = []
         for category in Database().execute(
-            "SELECT category FROM book_field WHERE book_id=?", (id[0],)
+            "SELECT category FROM book_field WHERE book_id=?", (id,)
         ):
             categories.append(category[0])
         row.append(", ".join(categories))
-        result.append(row)
+        data_result.append(row)
 
     # toss data to frontend
-    data = result
+    data = data_result
+    print(data_result)
     return render_template("search.html", data=data)
 
 
