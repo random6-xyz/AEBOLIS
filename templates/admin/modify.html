@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+    <script>
+        async function postData() {
+            const data = document.getElementsByName("data");
+            let  post_data = {};
+
+            post_data["old_title"] = document.getElementById("old_title").innerHTML;
+
+            for (var i = 0; i < data.length; i++) {
+                console.log(data[i])
+                var key = data[i].className;
+                var value = data[i].value.trim();
+                post_data[key] = value;
+            }
+
+            const response = await fetch('/admin/books/modify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(post_data),
+            });
+
+            if (response.ok) {
+                alert("Book modified");
+                window.location.href = "/admin/books"
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
+</head>
+<body style="text-align: center;">
+    <h1>
+        Admin add book
+    </h1>
+    <div>
+        <label>Old title:</label>
+        <label id="old_title">{{data["old_title"]}}</label><br><br>
+        <label>Title:</label>
+        <input name="data" type="text" class="title" placeholder="{{data['title']}}"><br><br>
+        <label>Writer:</label>
+        <input name="data" type="text" class="writer" placeholder="{{data['writer']}}"><br><br>
+        <label>Publisher:</label>
+        <input name="data" type="text" class="publisher" placeholder="{{data['publisher']}}"><br><br>
+        <label>Amount:</label>
+        <input name="data" type="text" class="amount" placeholder="{{data['amount']}}"><br><br>
+        <label>Category:</label>
+        <input name="data" type="text" class="category" placeholder="{{data['category']}}"><br><br>
+        <label>Available (0/1):</label>
+        <input name="data" type="text" class="available" placeholder="{{data['available']}}"><br><br>
+        <button onclick="postData()">Submit</button>
+    </div>
+</body>

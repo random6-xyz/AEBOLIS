@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<head>
+    <script>
+        async function postData() {
+            const data = document.getElementsByName("data");
+            let  post_data = {};
+
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].value == "") {
+                    alert("Full the sheet");
+                    return;
+                }
+                var key = data[i].className;
+                var value = data[i].value.trim();
+                post_data[key] = value;
+            }
+
+            const response = await fetch('/apply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(post_data),
+            });
+
+            if (response.ok) {
+                alert("Book added");
+            }
+            else {
+                alert("Error");
+            }
+
+        }
+    </script>
+</head>
+<body style="text-align: center;">
+    <h1>
+        Apply book
+    </h1>
+    <div>   
+        <label>Title:</label>
+        <input name="data" type="text" class="title"><br><br>
+        <label>Publisher:</label>
+        <input name="data" type="text" class="publisher"><br><br>
+        <label>Writer:</label>
+        <input name="data" type="text" class="writer"><br><br>
+        <label>Reason:</label>
+        <textarea name="data" type="text" class="reason"></textarea><br><br>
+        <button onclick="postData()">Submit</button>
+    </div>
+</body>
