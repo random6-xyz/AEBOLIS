@@ -78,7 +78,6 @@ def checkout_book():
         return response.text
 
 
-# TODO: @random6 Add frontend
 def apply_book():
     header = {"Content-type": "application/json"}
     cookies = {"session": "user"}

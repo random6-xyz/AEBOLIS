@@ -134,26 +134,34 @@ def profile():
 
 
 # user applys books
-@app.route("/apply", methods=["POST"])
+@app.route("/apply", methods=["POST", "GET"])
 def apply():
-    data = request.get_json()
-    result = check_parameters(data, ["title", "publisher", "writer", "reason"])
-    if result != True:
+    result = check_user(request.cookies.get("session"))
+    if not result:
         return result
 
-    student_number_result = check_user(request.cookies.get("session"))
-    if type(student_number_result) != str:
-        return student_number_result
+    if request.method == "GET":
+        return render_template("apply.html"), 200
 
-    Database().execute(
-        "INSERT INTO userapplys (student_number, title, publisher, writer, reason, confirm) VALUES (?, ?, ?, ?, ?, 0)",
-        (
-            int(student_number_result),
-            data["title"],
-            data["publisher"],
-            data["writer"],
-            data["reason"],
-        ),
-    )
+    elif request.method == "POST":
+        data = request.get_json()
+        result = check_parameters(data, ["title", "publisher", "writer", "reason"])
+        if result != True:
+            return result
 
-    return "", 200
+        student_number_result = check_user(request.cookies.get("session"))
+        if type(student_number_result) != str:
+            return student_number_result
+
+        Database().execute(
+            "INSERT INTO userapplys (student_number, title, publisher, writer, reason, confirm) VALUES (?, ?, ?, ?, ?, 0)",
+            (
+                int(student_number_result),
+                data["title"],
+                data["publisher"],
+                data["writer"],
+                data["reason"],
+            ),
+        )
+
+        return "", 200
