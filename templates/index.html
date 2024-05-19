@@ -1,8 +1,27 @@
 <!DOCTYPE html>
 <head>
+    <script>
+        async function search() {
+            const query = document.getElementById("query").value;
+            if (query === "") {
+                alert("query is empty");
+                return;
+            }
 
+            data = {
+                query: query,
+            };
+            window.location.href = "/search?" + new URLSearchParams(data);
+        }
+    </script>
 </head>
-<body style="text-align: center;">
+<body style="text-align: center">
     <h1>AEBOLIS</h1>
     <h4>AEgis BOok LendIng System</h4>
+    <button>Sign-in</button>
+    <button>Sign-up</button>
+    <br />
+    <h4>Book search</h4>
+    <input id="query" type="text" style="width: 30%" />
+    <button onclick="search()">Search</button>
 </body>
