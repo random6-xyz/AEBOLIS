@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <head>
     <script>
+        function search() {
+            const query = document.getElementById("query").value;
+
+            if (query === "") {
+                window.location.href = "/admin/logs"
+                return;
+            }
+
+            data = {
+                "query": query,
+            };
+            window.location.href = "/admin/logs?" + new URLSearchParams(data);
+        }
+
         function returnButton(event) {
             var row = event.target.parentNode.parentNode;
             var data = {};
@@ -36,6 +50,9 @@
 </head>
 <body style="text-align: center">
     <h1>Admin logs</h1>
+    <input id="query" type="text" style="width: 30%;">
+    <button onclick="search()">search</button>
+    <br><br>
     <table>
         <tr>
             {% for column in ["timestamp", "type", "student number", "title",

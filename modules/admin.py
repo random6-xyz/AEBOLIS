@@ -170,7 +170,6 @@ def admin_modify_books():
         id = Database().execute(
             "SELECT id FROM userbooks WHERE title=?", (data["title"].strip(),)
         )[0][0]
-        print(id)
         Database().execute("DELETE FROM book_field WHERE book_id=?", (id,))
         for category in data["category"].split(","):
             Database().execute(
@@ -214,10 +213,17 @@ def admin_logs():
         return result
 
     if request.method == "GET":
-        # get logs and return
         logs = load_userbooks_log()
-        print(logs)
-        return render_template("admin/logs.html", data=logs), 200
+        if "query" not in request.args or not request.args["query"]:
+            # get logs and return
+            return render_template("admin/logs.html", data=logs), 200
+
+        else:
+            data_logs = []
+            for log in logs:
+                if request.args["query"] in log["title"]:
+                    data_logs.append(log)
+            return render_template("admin/logs.html", data=data_logs), 200
 
     elif request.method == "POST":
         data = request.get_json()
