@@ -389,6 +389,39 @@ def admin_upload_books():
         return render_template("admin/upload.html"), 200
 
 
+# TODO: @random6 admin add category
+@app.route("/admin/category", methods=["GET", "POST"])
+def admin_category():
+    result = check_admin(request.cookies.get("session"))
+    if result != True:
+        return result
+
+    if request.method == "GET":
+        result = Database().execute("SELECT category FROM category")
+        print(result)
+        return render_template("admin/category.html", data=result)
+
+    elif request.method == "POST":
+        data = request.get_json()
+        result = check_parameters(data, ["method", "category"])
+        if result != True:
+            return result
+
+        if data["method"] == "delete":
+            Database().execute(
+                "DELETE FROM category WHERE category=?", (data["category"],)
+            )
+        elif data["method"] == "add":
+            Database().execute(
+                "INSERT INTO category (category) VALUES (?) ", (data["category"],)
+            )
+        else:
+            error_message = "Inappropriate method"
+            return render_template("error.html", data=error_message)
+
+        return "", 200
+
+
 # TODO: @imStillDebugging admin show users
 @app.route("/admin/users", methods=["GET"])
 def admin_show_users():

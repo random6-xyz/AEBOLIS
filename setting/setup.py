@@ -65,3 +65,11 @@ def db_setup():
         );
     """
     )
+
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS category (
+        category TEXT NOT NULL
+        );
+    """
+    )

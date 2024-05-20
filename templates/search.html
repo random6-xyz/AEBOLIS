@@ -5,7 +5,7 @@
             var row = event.target.parentNode.parentNode;
             if (row.cells[0].textContent.trim() != "1" && Number(row.cells[4].textContent <= 0)) {
                 alert("Not available");
-                return
+                return;
             }
 
             const data = {

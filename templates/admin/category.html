@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<head>
+    <script>
+        async function delete_category(event) {
+            let row = event.target.parentNode.parentNode;
+            const data = {
+                "method": "delete",
+                "category": row.cells[0].textContent.trim(),
+            };
+
+            const response = await fetch('/admin/category', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                alert("Category deleted");
+
+                let index = row.rowIndex;
+                document.getElementById("table").deleteRow(index);
+            }
+            else {
+                alert("Error");
+            }
+        }
+
+        async function add_category(event) {
+            const input = document.getElementById("new_category");
+            const data = {
+                "method": "add",
+                "category": input.value.trim(),
+            }
+
+            const response = await fetch('/admin/category', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                alert("Category added");
+
+                window.location.href = "/admin/category";
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
+</head>
+<body style="text-align: center;">
+    <h1>
+        Admin category
+    </h1>
+    <table id="table">
+        <tr>
+            {% for column in ["category", "button"] %}
+            <th style="width: 10%;">
+                {{column}}
+            </th>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>
+                <input id="new_category" type="text"/>
+            </td>
+            <td>
+                <button onclick="add_category(event)">add</button>
+            </td>
+        </tr>
+        {% for row in data%}
+        <tr>
+            {% for data in row %}
+            <td>
+                {{data}}
+            </td>
+            {% endfor %}
+            <td>
+                <button onclick="delete_category(event)">delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
