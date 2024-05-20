@@ -16,8 +16,9 @@
     </script>
 </head>
 <body style="text-align: center">
-    <h1>AEBOLIS</h1>
-    <h4>AEgis BOok LendIng System</h4>
+    <h1 style="margin-bottom: 0px;">AEBOLIS</h1>
+    <h4 style="margin-top: 0px;">AEgis BOok LendIng System</h4>
+    <h4>Account</h4>
     <button>Sign-in</button>
     <button>Sign-up</button>
     <br />
@@ -28,8 +29,17 @@
     <table style="margin-left: auto; margin-right: auto;">
         {% for category in data %}
         <td style="width: 10%;">
-            <a href="/search?query={{category[0]}}">{{category[0]}}</a>
+            <a style="text-decoration: none; color: black; text-decoration: underline;" href="/search?query={{category[0]}}">{{category[0]}}</a>
         </td>
         {% endfor %}
     </table>
+    <h4>Apply books</h4>
+    <button onclick="location.href='/apply'">Apply</button>
 </body>
+<footer style="position: fixed; bottom: 0; width: 100%; align-items: cetner;">
+    <div style="margin: 20px;">
+        <h4></h4>
+        <button onclick="location.href='/'">Home</button>
+        <button onclick="location.href='/signout'">Sign-out</button>
+    </div>
+</footer>

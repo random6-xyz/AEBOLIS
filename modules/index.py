@@ -3,8 +3,13 @@ from modules import app
 from databases.db import Database
 
 
-# TODO: @random6 category search
 @app.route("/", methods=["GET"])
 def index():
     result = Database().execute("SELECT category FROM category")
     return render_template("index.html", data=result), 200
+
+
+# TODO: @random6 admin panel
+@app.route("/admin", methods=["GET"])
+def admin_index():
+    return render_template("admin/index.html"), 200
