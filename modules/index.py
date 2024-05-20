@@ -9,7 +9,6 @@ def index():
     return render_template("index.html", data=result), 200
 
 
-# TODO: @random6 admin panel
 @app.route("/admin", methods=["GET"])
 def admin_index():
     return render_template("admin/index.html"), 200
