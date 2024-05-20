@@ -1,7 +1,6 @@
 import sqlite3
 
 
-
 class Database:
     def __init__(self):
         self.connection = sqlite3.connect("databases/mainDB.db", isolation_level=None)
@@ -9,7 +8,7 @@ class Database:
         self.cursor = self.connection.cursor()
 
     # common command execute function
-    def execute(self, query, arguments=[], isOnlyexecute = 0):
+    def execute(self, query, arguments=[], isOnlyexecute=0):
         self.cursor.execute(query, arguments)
         result = self.cursor.fetchall()
         if not result and "INSERT" in query:
