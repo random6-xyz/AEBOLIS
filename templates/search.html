@@ -5,7 +5,7 @@
             var row = event.target.parentNode.parentNode;
             if (row.cells[0].textContent.trim() != "1" && Number(row.cells[4].textContent <= 0)) {
                 alert("Not available");
-                return
+                return;
             }
 
             const data = {
@@ -32,7 +32,7 @@
     <h1>
         Search Result
     </h1>
-    <table>
+    <table style="margin-left: auto; margin-right: auto;">
         <tr>
             {% for column in ["available", "title", "writer", "publisher", "amount", "category", "buttons"] %}
             <th style="width: 10%;">
@@ -56,3 +56,10 @@
         {% endfor %}
     </table>
 </body>
+<footer style="position: fixed; bottom: 0; width: 100%; align-items: cetner;">
+    <div style="margin: 20px;">
+        <h4></h4>
+        <button onclick="location.href='/'">Home</button>
+        <button onclick="location.href='/signout'">Sign-out</button>
+    </div>
+</footer>

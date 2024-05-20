@@ -1,25 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index Page</title>
+    <script>
+        async function search() {
+            const query = document.getElementById("query").value;
+            if (query === "") {
+                alert("query is empty");
+                return;
+            }
+
+            data = {
+                query: query,
+            };
+            window.location.href = "/search?" + new URLSearchParams(data);
+        }
+    </script>
 </head>
-<body>
-    <h1>Welcome to Our Website</h1>
-    <nav>
-        {% if current_user.is_authenticated %}
-            <p>Logged in as {{ current_user.username }}</p>
-            <a href="{{ url_for('sign_out') }}">Sign out</a>
-        {% else %}
-            <a href="{{ url_for('sign_in') }}">Sign in</a>
-        {% endif %}
-        <ul>
-            <li><a href="/signup">Sign Up</a></li>
-            {% if current_user.is_authenticated %}
-                <li><a href="/delete_account">Delete Account</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+<body style="text-align: center">
+    <h1 style="margin-bottom: 0px;">AEBOLIS</h1>
+    <h4 style="margin-top: 0px;">AEgis BOok LendIng System</h4>
+    <h4>Account</h4>
+    <button>Sign-in</button>
+    <button>Sign-up</button>
+    <br />
+    <h4>Book search</h4>
+    <input id="query" type="text" style="width: 30%" />
+    <button onclick="search()">Search</button>
+    <h4>Book category</h4>
+    <table style="margin-left: auto; margin-right: auto;">
+        {% for category in data %}
+        <td style="width: 10%;">
+            <a style="text-decoration: none; color: black; text-decoration: underline;" href="/search?query={{category[0]}}">{{category[0]}}</a>
+        </td>
+        {% endfor %}
+    </table>
+    <h4>Apply books</h4>
+    <button onclick="location.href='/apply'">Apply</button>
 </body>
-</html>
+<footer style="position: fixed; bottom: 0; width: 100%; align-items: cetner;">
+    <div style="margin: 20px;">
+        <h4></h4>
+        <button onclick="location.href='/'">Home</button>
+        <button onclick="location.href='/signout'">Sign-out</button>
+    </div>
+</footer>

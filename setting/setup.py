@@ -90,6 +90,13 @@ def db_setup():
                 """
     )
 
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS category (
+        category TEXT NOT NULL
+        );
+    """
+    )
 
 def login_setup():
     login_manager.init_app(app)
@@ -100,3 +107,5 @@ def login_setup():
 def setup():
     db_setup()
     login_setup()
+
+

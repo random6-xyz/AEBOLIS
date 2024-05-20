@@ -71,7 +71,6 @@ def search_books():
 
     # toss data to frontend
     data = data_result
-    print(data_result)
     return render_template("search.html", data=data)
 
 

@@ -170,7 +170,6 @@ def admin_modify_books():
         id = Database().execute(
             "SELECT id FROM userbooks WHERE title=?", (data["title"].strip(),)
         )[0][0]
-        print(id)
         Database().execute("DELETE FROM book_field WHERE book_id=?", (id,))
         for category in data["category"].split(","):
             Database().execute(
@@ -213,10 +212,17 @@ def admin_logs():
         return result
 
     if request.method == "GET":
-        # get logs and return
         logs = load_userbooks_log()
-        print(logs)
-        return render_template("admin/logs.html", data=logs), 200
+        if "query" not in request.args or not request.args["query"]:
+            # get logs and return
+            return render_template("admin/logs.html", data=logs), 200
+
+        else:
+            data_logs = []
+            for log in logs:
+                if request.args["query"] in log["title"]:
+                    data_logs.append(log)
+            return render_template("admin/logs.html", data=data_logs), 200
 
     elif request.method == "POST":
         data = request.get_json()
@@ -239,6 +245,7 @@ def admin_logs():
         return "", 200
 
 
+# TODO: @random6 append username in table
 # admin show applys
 @app.route("/admin/apply", methods=["GET", "POST"])
 def admin_apply():
@@ -379,6 +386,38 @@ def admin_upload_books():
 
     elif request.method == "GET":
         return render_template("admin/upload.html"), 200
+
+
+@app.route("/admin/category", methods=["GET", "POST"])
+def admin_category():
+    result = check_admin(request.cookies.get("session"))
+    if result != True:
+        return result
+
+    if request.method == "GET":
+        result = Database().execute("SELECT category FROM category")
+        print(result)
+        return render_template("admin/category.html", data=result)
+
+    elif request.method == "POST":
+        data = request.get_json()
+        result = check_parameters(data, ["method", "category"])
+        if result != True:
+            return result
+
+        if data["method"] == "delete":
+            Database().execute(
+                "DELETE FROM category WHERE category=?", (data["category"],)
+            )
+        elif data["method"] == "add":
+            Database().execute(
+                "INSERT INTO category (category) VALUES (?) ", (data["category"],)
+            )
+        else:
+            error_message = "Inappropriate method"
+            return render_template("error.html", data=error_message)
+
+        return "", 200
 
 
 # TODO: @imStillDebugging admin show users

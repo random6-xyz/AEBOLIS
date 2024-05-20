@@ -1,40 +1,14 @@
 <!DOCTYPE html>
-<header>
+<head>
     <script>
-        async function confirm_apply(event) {
+        async function delete_category(event) {
             let row = event.target.parentNode.parentNode;
-            data = {
-                "method": "confirm",
-                "title": row.cells[1].textContent.trim(),
-                "student_number": row.cells[0].textContent.trim(),
-            }
-
-            const response = await fetch('/admin/apply', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-
-            if (response.ok) {
-                alert("Apply confirmed");
-                row.cells[5].textContent = "1"
-            }
-            else {
-                alert("Error");
-            }
-        }
-
-        async function delete_apply(event) {
-            let row = event.target.parentNode.parentNode;
-            data = {
+            const data = {
                 "method": "delete",
-                "title": row.cells[1].textContent.trim(),
-                "student_number": row.cells[0].textContent.trim(),
-            }
+                "category": row.cells[0].textContent.trim(),
+            };
 
-            const response = await fetch('/admin/apply', {
+            const response = await fetch('/admin/category', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,7 +17,8 @@
             })
 
             if (response.ok) {
-                alert("Apply deleted");
+                alert("Category deleted");
+
                 let index = row.rowIndex;
                 document.getElementById("table").deleteRow(index);
             }
@@ -51,19 +26,52 @@
                 alert("Error");
             }
         }
+
+        async function add_category(event) {
+            const input = document.getElementById("new_category");
+            const data = {
+                "method": "add",
+                "category": input.value.trim(),
+            }
+
+            const response = await fetch('/admin/category', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                alert("Category added");
+
+                window.location.href = "/admin/category";
+            }
+            else {
+                alert("Error");
+            }
+        }
     </script>
-</header>
+</head>
 <body style="text-align: center;">
     <h1>
-        Apply books
+        Admin category
     </h1>
     <table id="table">
         <tr>
-            {% for column in ["student_number", "title", "publisher", "writer", "reason", "confirm", "buttons"] %}
+            {% for column in ["category", "button"] %}
             <th style="width: 10%;">
                 {{column}}
             </th>
             {% endfor %}
+        </tr>
+        <tr>
+            <td>
+                <input id="new_category" type="text"/>
+            </td>
+            <td>
+                <button onclick="add_category(event)">add</button>
+            </td>
         </tr>
         {% for row in data%}
         <tr>
@@ -73,8 +81,7 @@
             </td>
             {% endfor %}
             <td>
-                <button onclick="confirm_apply(event)">confirm</button>
-                <button onclick="delete_apply(event)">delete</button>
+                <button onclick="delete_category(event)">delete</button>
             </td>
         </tr>
         {% endfor %}
