@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<header>
+    <script>
+        async function confirm_apply(event) {
+            let row = event.target.parentNode.parentNode;
+            data = {
+                "method": "confirm",
+                "title": row.cells[1].textContent.trim(),
+                "student_number": row.cells[0].textContent.trim(),
+            }
+
+            const response = await fetch('/admin/apply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                alert("Apply confirmed");
+                row.cells[5].textContent = "1"
+            }
+            else {
+                alert("Error");
+            }
+        }
+
+        async function delete_apply(event) {
+            let row = event.target.parentNode.parentNode;
+            data = {
+                "method": "delete",
+                "title": row.cells[1].textContent.trim(),
+                "student_number": row.cells[0].textContent.trim(),
+            }
+
+            const response = await fetch('/admin/apply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                alert("Apply deleted");
+                let index = row.rowIndex;
+                document.getElementById("table").deleteRow(index);
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
+</header>
+<body style="text-align: center;">
+    <h1>
+        Apply books
+    </h1>
+    <table id="table">
+        <tr>
+            {% for column in ["student_number", "title", "publisher", "writer", "reason", "confirm", "buttons"] %}
+            <th style="width: 10%;">
+                {{column}}
+            </th>
+            {% endfor %}
+        </tr>
+        {% for row in data%}
+        <tr>
+            {% for data in row %}
+            <td>
+                {{data}}
+            </td>
+            {% endfor %}
+            <td>
+                <button onclick="confirm_apply(event)">confirm</button>
+                <button onclick="delete_apply(event)">delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>

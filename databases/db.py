@@ -1,12 +1,26 @@
 import sqlite3
 
 
+
 class Database:
     def __init__(self):
         self.connection = sqlite3.connect("databases/mainDB.db", isolation_level=None)
+        self.connection = sqlite3.connect("databases/mainDB.db", isolation_level=None)
         self.cursor = self.connection.cursor()
 
-    def execute(self, query, arguments=[]):
+    # common command execute function
+    def execute(self, query, arguments=[], isOnlyexecute = 0):
+        self.cursor.execute(query, arguments)
+        result = self.cursor.fetchall()
+        if not result and "INSERT" in query:
+            return self.cursor.lastrowid
+        return result
+
+    def executemany(self, query, arguments):
+        self.cursor.executemany(query, arguments)
+        return self.cursor.fetchall()
+
+    def execute_only(self, query, arguments=[]):
         self.cursor.execute(query, arguments)
 
     def commit(self):

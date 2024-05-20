@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+    <script>
+        function returnButton(event) {
+        var row = event.target.parentNode.parentNode;
+        var data = {};
+
+        if (event.target.checked){
+            row.cells[4].innerHTML = "True";
+            for (var i = 0; i < 5; i++) {
+                row.cells[i].style.textDecoration = "line-through";
+            }
+        } else {
+            row.cells[4].innerHTML = "False";
+            for (var i = 0; i < 5; i++) {
+                row.cells[i].style.textDecoration = "";
+            }
+        }
+
+        for (var i = 0; i < row.cells.length; i++) {
+            var cell = row.cells[i];
+            var key = cell.className;
+            var value = cell.textContent.trim();
+            data[key] = value;
+        }
+
+        fetch('/admin/logs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+    }
+    </script>
+</head>
+<body style="text-align: center;">
+    <h1>
+        Admin logs
+    </h1>
+    <table>
+        <tr>
+            {% for column in ["timestamp", "type", "student number", "title", "return"] %}
+            <th style="width: 10%;">
+                {{column}}
+            </th>
+            {% endfor %}
+            <th>
+                return check
+            </th>
+        </tr>
+        {% for row in data%}
+        <tr>
+            {% for (key, value) in row.items() %}
+            <td class={{key}}>
+                {% if row["return"] == "true" %}
+                    <del>
+                        {{value}}
+                    </del>
+                {% else %}
+                    {{value}}
+                {% endif %}
+            </td>
+            {% endfor %}
+            <td style="width: 10%;">
+                <input class="return" id="return_button" type="checkbox" onclick="returnButton(event)"/>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>

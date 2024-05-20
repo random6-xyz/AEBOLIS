@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<head>
+    <script>
+        function modify_book(event) {
+            let row = event.target.parentNode.parentNode;
+            let data = {
+                "old_title": row.cells[1].textContent.trim(),
+                "title": row.cells[1].textContent.trim(),
+                "available": row.cells[0].textContent.trim(),
+                "writer": row.cells[2].textContent.trim(),
+                "publisher": row.cells[3].textContent.trim(),
+                "amount": row.cells[4].textContent.trim(),
+                "category": row.cells[5].textContent.trim(),
+            };
+
+            window.location.href = '/admin/books/modify?' + new URLSearchParams(data)
+        }
+
+        async function delete_book(event) {
+            let row = event.target.parentNode.parentNode;
+            let data = {};
+            data["title"] = row.cells[1].textContent.trim();
+
+            const response = await fetch('/admin/books/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                alert("Book deleted");
+
+                let index = row.rowIndex;
+                document.getElementById("table").deleteRow(index);
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
+</head>
+<body style="text-align: center;">
+    <h1>
+        Admin books
+    </h1>
+    <table id="table">
+        <tr>
+            {% for column in ["available", "title", "writer", "publisher", "amount", "category", "button"] %}
+            <th style="width: 10%;">
+                {{column}}
+            </th>
+            {% endfor %}
+        </tr>
+        {% for row in data%}
+        <tr>
+            {% for data in row %}
+            <td>
+                {{data}}
+            </td>
+            {% endfor %}
+            <td>
+                <button onclick="modify_book(event)">modify</button>
+                <button onclick="delete_book(event)">delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>

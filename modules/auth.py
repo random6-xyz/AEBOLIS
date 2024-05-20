@@ -18,6 +18,7 @@ from datetime import datetime
 ##################### API ##############################
 
 
+
 # API : sign up (name, number, password) sha512 + salt
 @app.route("/signup", methods=["POST", "GET"])
 def sign_up():
@@ -121,6 +122,7 @@ def delete_account():
 ################# NON API #######################
 
 
+
 class User(UserMixin):
     def __init__(self, row: tuple):
         self.__id = row[0]
@@ -149,6 +151,7 @@ def hash_password(origin_password: str, salt):
     hash_object = hashlib.sha512()
     hash_object.update(hash_input)
     return hash_object.hexdigest()
+
 
 
 # check character

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<body style="text-align: center;">
+    <h1>
+        Checkout history
+    </h1>
+    <table>
+        <tr>
+            {% for column in ["student_number", "title", "return", "time"] %}
+            <th style="width: 18%;">
+                {{column}}
+            </th>
+            {% endfor %}
+        </tr>
+        {% for row in data%}
+        <tr>
+            {% for data in row %}
+            <td>
+                {{data}}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
