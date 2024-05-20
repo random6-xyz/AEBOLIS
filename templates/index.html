@@ -24,4 +24,12 @@
     <h4>Book search</h4>
     <input id="query" type="text" style="width: 30%" />
     <button onclick="search()">Search</button>
+    <h4>Book category</h4>
+    <table style="margin-left: auto; margin-right: auto;">
+        {% for category in data %}
+        <td style="width: 10%;">
+            <a href="/search?query={{category[0]}}">{{category[0]}}</a>
+        </td>
+        {% endfor %}
+    </table>
 </body>

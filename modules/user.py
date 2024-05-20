@@ -32,7 +32,6 @@ def check_user(session):
     return result["code"]
 
 
-# TODO: @random6 category search
 # user book search
 @app.route("/search", methods=["GET"])
 def search_books():

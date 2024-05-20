@@ -204,7 +204,6 @@ def admin_delete_books():
     return "", 200
 
 
-# TODO: @random6 add title filter
 # admin modify logs
 @app.route("/admin/logs", methods=["GET", "POST"])
 def admin_logs():
@@ -389,7 +388,6 @@ def admin_upload_books():
         return render_template("admin/upload.html"), 200
 
 
-# TODO: @random6 admin add category
 @app.route("/admin/category", methods=["GET", "POST"])
 def admin_category():
     result = check_admin(request.cookies.get("session"))
