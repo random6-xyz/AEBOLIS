@@ -22,13 +22,12 @@ from setting.setup import access_logger, signup_logger
 def sign_up():
     if request.method == "POST":
         # get user information from form data
-        username = request.form["username"]
-        student_id = int(request.form["student_id"])
-        password = request.form["password"]
+        username = request.get_json()["username"]
+        student_id = int(request.get_json()["student_id"])
+        password = request.get_json()["password"]
 
         # srearch user data from database
         row = Database().select_account_info(student_id)
-
         if row is not None:
             write_signup_log("invalid signup request", student_id)
             return jsonify({"message": "이미 사용 중인 학번입니다."}), 400
@@ -63,8 +62,9 @@ def sign_up():
 @app.route("/signin", methods=["POST", "GET"])
 def sign_in():
     if request.method == "POST":
-        student_id = int(request.form["student_id"])
-        password = request.form["password"]
+        print(request.get_json())
+        student_id = int(request.get_json()["student_id"])
+        password = request.get_json()["password"]
         row = Database().select_account_info(student_id)
         if (
             (row is not None)
@@ -98,7 +98,7 @@ def sign_out():
 @login_required
 def delete_account():
     if request.method == "POST":
-        password = request.form["password"]
+        password = request.get_json()["password"]
         row = Database().select_account_info(current_user.get_id())
 
         if (
@@ -155,7 +155,7 @@ def is_ascii_33_to_126(string: str) -> bool:
     return all(("!" <= character <= "~") for character in string)
 
 
-def get_user_info(session):
+def get_user_info():
     return current_user.get_user_dict()
 
 

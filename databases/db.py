@@ -26,7 +26,7 @@ class Database:
         self.connection.commit()
 
     def select_account_info(self, ID: int) -> tuple:
-        self.execute(
+        self.execute_only(
             """
                 SELECT *
                 FROM USER

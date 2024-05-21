@@ -3,8 +3,8 @@
     <script>
         async function submit() {
             let post_data = {
-                "student_id": document.getElementById("student_id"),
-                "password": document.getElementById("password"),
+                "student_id": document.getElementById("student_id").value,
+                "password": document.getElementById("password").value,
             }
 
             const response = await fetch('/signin', {
@@ -27,7 +27,7 @@
 <body style="text-align: center;">
     <h1>Sign-in</h1>
     <label>Student number:</label>
-    <input type="text" id="studnet_id"><br><br>
+    <input type="text" id="student_id"><br><br>
     <label>Password:</label>
     <input type="text" id="password"><br><br>
     <button onclick="submit()">Submit</button>
