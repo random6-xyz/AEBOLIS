@@ -107,5 +107,3 @@ def login_setup():
 def setup():
     db_setup()
     login_setup()
-
-

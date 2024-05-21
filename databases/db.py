@@ -4,11 +4,10 @@ import sqlite3
 class Database:
     def __init__(self):
         self.connection = sqlite3.connect("databases/mainDB.db", isolation_level=None)
-        self.connection = sqlite3.connect("databases/mainDB.db", isolation_level=None)
         self.cursor = self.connection.cursor()
 
     # common command execute function
-    def execute(self, query, arguments=[], isOnlyexecute=0):
+    def execute(self, query, arguments=[]):
         self.cursor.execute(query, arguments)
         result = self.cursor.fetchall()
         if not result and "INSERT" in query:
@@ -22,6 +21,7 @@ class Database:
     def execute_only(self, query, arguments=[]):
         self.cursor.execute(query, arguments)
 
+    # TODO: @imStillDebugging Remove this useless function
     def commit(self):
         self.connection.commit()
 
@@ -39,7 +39,7 @@ class Database:
     def insert_account_info(
         self, ID: int, NAME: str, HASHED_PASSWORD: str, SALT: str, IS_CONFIRMED: int
     ) -> None:
-        self.execute(
+        self.execute_only(
             """
                 INSERT INTO USER(ID, NAME, HASHED_PASSWORD, SALT, IS_ADMIN, IS_CONFIRMED)
                 VALUES (:ID, :NAME, :HASHED_PASSWORD, :SALT, 0, :IS_CONFIRMED) ;
@@ -54,7 +54,7 @@ class Database:
         )
 
     def delete_user(self, ID: int):
-        self.execute(
+        self.execute_only(
             """
                 DELETE FROM USER
                 WHERE ID = :ID ;

@@ -11,9 +11,8 @@ from setting.setup import app, login_manager
 from databases.db import Database
 import hashlib
 import bcrypt
-from modules.index import index
 from setting.setup import access_logger, signup_logger
-from datetime import datetime
+
 
 ##################### API ##############################
 

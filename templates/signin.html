@@ -1,16 +1,41 @@
 <!DOCTYPE html>
-<html>
 <head>
-    <title>로그인</title>
+    <script>
+        async function submit() {
+            let post_data = {
+                "student_id": document.getElementById("student_id"),
+                "password": document.getElementById("password"),
+            }
+
+            const response = await fetch('/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(post_data),
+            });
+
+            if (response.ok) {
+                alert("Success");
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
 </head>
-<body>
-    <h2>로그인</h2>
-    <form method="post" action="/signin">
-        <label for="student_id">student number:</label>
-        <input type="number" id="student_id" name="student_id">
-        <label for="password">password:</label>
-        <input type="password" id="password" name="password">
-        <button type="submit">sign in</button>
-    </form>
+<body style="text-align: center;">
+    <h1>Sign-in</h1>
+    <label>Student number:</label>
+    <input type="text" id="studnet_id"><br><br>
+    <label>Password:</label>
+    <input type="text" id="password"><br><br>
+    <button onclick="submit()">Submit</button>
 </body>
-</html>
+<footer style="position: fixed; bottom: 0; width: 100%; align-items: cetner;">
+    <div style="margin: 20px;">
+        <h4></h4>
+        <button onclick="location.href='/'">Home</button>
+        <button onclick="location.href='/signout'">Sign-out</button>
+    </div>
+</footer>
