@@ -1,4 +1,5 @@
 from flask import render_template, request
+from flask_login import login_required
 from pandas import read_excel
 from werkzeug.utils import secure_filename
 from modules import app
@@ -16,9 +17,6 @@ def check_parameters(data, parameters):
             return render_template("error.html", data=error_messgae), 422
 
     return True
-
-
-from flask_login import login_required, current_user
 
 
 @app.route("/admin/books", methods=["GET"])
@@ -47,6 +45,7 @@ def admin_books():
 
 # add books
 @app.route("/admin/books/add", methods=["POST", "GET"])
+@login_required
 def admin_add_books():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
@@ -99,6 +98,7 @@ def admin_add_books():
 
 # modifying books for admin
 @app.route("/admin/books/modify", methods=["POST", "GET"])
+@login_required
 def admin_modify_books():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
@@ -162,6 +162,7 @@ def admin_modify_books():
 
 # admin delete book
 @app.route("/admin/books/delete", methods=["POST"])
+@login_required
 def admin_delete_books():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
@@ -186,6 +187,7 @@ def admin_delete_books():
 
 # admin modify logs
 @app.route("/admin/logs", methods=["GET", "POST"])
+@login_required
 def admin_logs():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
@@ -228,6 +230,7 @@ def admin_logs():
 # TODO: @random6 append username in table
 # admin show applys
 @app.route("/admin/apply", methods=["GET", "POST"])
+@login_required
 def admin_apply():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
@@ -275,6 +278,7 @@ def admin_apply():
 # FIXME: @random6 What is the purpose of this function???
 # show and modify checkout history
 @app.route("/admin/checkout", methods=["GET", "POST"])
+@login_required
 def admin_checkout():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
@@ -324,6 +328,7 @@ def process_xlsx(file_name):
 
 # upload .xlsx file
 @app.route("/admin/books/upload", methods=["GET", "POST"])
+@login_required
 def admin_upload_books():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
@@ -369,6 +374,7 @@ def admin_upload_books():
 
 
 @app.route("/admin/category", methods=["GET", "POST"])
+@login_required
 def admin_category():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
