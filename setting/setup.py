@@ -84,6 +84,21 @@ def db_setup():
         );
     """
     )
+    print(db.select_account_info(11111111))
+    if (db.select_account_info(11111111)) is None:
+        db.execute(
+            """
+            INSERT INTO USER
+            SELECT * FROM (SELECT 
+                11111111, 
+                'adimin',
+                'f8c6e58692da68991e92494a67414766ecd4db590666dc45c7f446953797df8544bb77f823095d3b5f2106a217b36ab40d73f0ac95b9aca5fafcc46c46473b66',
+                '$2b$12$BEJ0KFPNZ.exUUKPDCp4j.',
+                1,
+                1
+            )
+        """
+        )
 
 
 def login_setup():
