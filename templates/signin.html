@@ -18,6 +18,9 @@
             if (response.ok) {
                 alert("Success");
             }
+            else if (response.status === 403) {
+                alert("Incorrect");
+            }
             else {
                 alert("Error");
             }

@@ -62,14 +62,13 @@ def sign_up():
 @app.route("/signin", methods=["POST", "GET"])
 def sign_in():
     if request.method == "POST":
-        print(request.get_json())
         student_id = int(request.get_json()["student_id"])
         password = request.get_json()["password"]
         row = Database().select_account_info(student_id)
         if (
             (row is not None)
             and (hash_password(password, row[3]) == row[2])
-            and (not row[4])
+            # and (not row[4]) FIXME: @imStillDebugging What is this line for?
             and row[5]
         ):
             user = User(row)

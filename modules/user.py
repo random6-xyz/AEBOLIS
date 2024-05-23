@@ -1,4 +1,5 @@
 from flask import render_template, request
+from flask_login import login_required
 import time
 from datetime import datetime
 from modules import app
@@ -34,6 +35,7 @@ def check_user(session):
 
 # user book search
 @app.route("/search", methods=["GET"])
+@login_required
 def search_books():
     # check parameters
     if "query" not in request.args:
@@ -58,9 +60,11 @@ def search_books():
     # query book data and categories with book id
     data_result = []
     for id in set(field_result + result):
-        row = list(
-            Database().execute("SELECT * FROM userbooks WHERE id=?", (id,))[0][1:]
-        )
+        row = Database().execute("SELECT * FROM userbooks WHERE id=?", (str(id),))
+        if not row:
+            continue
+        else:
+            row = list(row[0][1:])
         categories = []
         for category in Database().execute(
             "SELECT category FROM book_field WHERE book_id=?", (id,)
@@ -76,15 +80,16 @@ def search_books():
 
 # user checkout books
 @app.route("/checkout", methods=["POST"])
+@login_required
 def checkout():
     data = request.get_json()
     result = check_parameters(data, ["title"])
     if result != True:
         return result
 
-    student_number_result = check_user(request.cookies.get("session"))
-    if type(student_number_result) != str:
-        return student_number_result
+    user_info = get_user_info()
+    student_number_result = user_info["id"]
+    student_name = user_info["name"]
 
     # check if books is available
     result = Database().execute(
@@ -128,17 +133,15 @@ def checkout():
 
 # TODO: @imStillDebugging show user profile
 @app.route("/profile", methods=["GET"])
+@login_required
 def profile():
     return
 
 
 # user applys books
 @app.route("/apply", methods=["POST", "GET"])
+@login_required
 def apply():
-    result = check_user(request.cookies.get("session"))
-    if not result:
-        return result
-
     if request.method == "GET":
         return render_template("apply.html"), 200
 
@@ -148,9 +151,8 @@ def apply():
         if result != True:
             return result
 
-        student_number_result = check_user(request.cookies.get("session"))
-        if type(student_number_result) != str:
-            return student_number_result
+        user_info = get_user_info()
+        student_number_result = user_info["id"]
 
         Database().execute(
             "INSERT INTO userapplys (student_number, title, publisher, writer, reason, confirm) VALUES (?, ?, ?, ?, ?, 0)",

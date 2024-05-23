@@ -17,3 +17,5 @@ def admin_index():
     if get_user_info()["role"] != True:
         error_messgae = "Not authenticated, You are not admin"
         return render_template("error.html", data=error_messgae), 401
+
+    return render_template("admin/index.html"), 200

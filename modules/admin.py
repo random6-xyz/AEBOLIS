@@ -382,7 +382,6 @@ def admin_category():
 
     if request.method == "GET":
         result = Database().execute("SELECT category FROM category")
-        print(result)
         return render_template("admin/category.html", data=result)
 
     elif request.method == "POST":
