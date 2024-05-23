@@ -19,16 +19,19 @@
 <body style="text-align: center">
     <h1 style="margin-bottom: 0px;">AEBOLIS</h1>
     <h4 style="margin-top: 0px;">AEgis BOok LendIng System</h4>
+    {% if data[-1] == False %}
     <h4>Account</h4>
     <button onclick="location.href='/signin'">Sign-in</button>
     <button onclick="location.href='/signup'">Sign-up</button>
     <br />
+    {% endif %}
+    {% if data[-1] == True %}
     <h4>Book search</h4>
     <input id="query" type="text" style="width: 30%" />
     <button onclick="search()">Search</button>
     <h4>Book categories</h4>
     <table style="margin-left: auto; margin-right: auto;">
-        {% for category in data %}
+        {% for category in data[:-1] %}
         <td style="width: 10%;">
             <a style="text-decoration: none; color: black; text-decoration: underline;" href="/search?query={{category[0]}}">{{category[0]}}</a>
         </td>
@@ -41,6 +44,7 @@
     </table>
     <h4>Apply books</h4>
     <button onclick="location.href='/apply'">Apply</button>
+    {% endif %}
 </body>
 <footer style="position: fixed; bottom: 0; width: 100%; align-items: cetner;">
     <div style="margin: 20px;">

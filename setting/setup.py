@@ -2,7 +2,6 @@ from databases.db import Database
 from os import getenv
 from flask_login import LoginManager
 from modules import app
-
 from logs.log import setup_acces_logger, setup_signup_logger
 
 
@@ -84,7 +83,7 @@ def db_setup():
         );
     """
     )
-    print(db.select_account_info(11111111))
+
     if (db.select_account_info(11111111)) is None:
         db.execute(
             """
