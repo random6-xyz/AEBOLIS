@@ -11,7 +11,7 @@ from setting.setup import app, login_manager
 from databases.db import Database
 import hashlib
 import bcrypt
-from setting.setup import access_logger, signup_logger
+from setting.setup import write_access_log, write_signup_log
 
 
 ##################### API ##############################
@@ -67,8 +67,7 @@ def sign_in():
         row = Database().select_account_info(student_id)
         if (
             (row is not None)
-            and (hash_password(password, row[3]) == row[2])
-            # and (not row[4]) FIXME: @imStillDebugging What is this line for?
+            and (hash_password(password, row[3]) == row[2]) # check password
             and row[5]
         ):
             user = User(row)
@@ -80,17 +79,13 @@ def sign_in():
 
     return render_template("signin.html")
 
-
 # API : sign out, delete session
-@app.route("/signout", methods=["POST", "GET"])
+@app.route("/profile/signout", methods=["POST", "GET"])
 @login_required
 def sign_out():
-    if request.method == "POST":
         write_access_log("Signout successed", current_user.get_id())
         logout_user()
         return redirect(url_for("index"))
-    return render_template("signout.html")
-
 
 # API : delete account
 @app.route("/delete_account", methods=["POST", "GET"])
@@ -169,23 +164,3 @@ def load_user(user_id: int) -> User:
 
 def check_session():
     return bool(session.get("user_id"))
-
-
-def write_access_log(head: str, student_id: int):
-    access_logger.info(
-        head,
-        extra={
-            "remote_addr": request.remote_addr,
-            "id": student_id,
-        },
-    )
-
-
-def write_signup_log(head: str, student_id: int):
-    signup_logger.info(
-        head,
-        extra={
-            "remote_addr": request.remote_addr,
-            "id": student_id,
-        },
-    )

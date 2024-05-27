@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my profile</title>
+</head>
+<body style="text-align: center">
+    <h1>My Profile</h1>
+    <a href="/profile/logs"><button>view logs</button></a>
+    <a href="/profile/book_apply_list"><button>view applied book list</button></a>
+    <a href="/profile/signout"><button>sign out</button></a>
+
+    <div>
+        <h2>Profile Information</h2>
+        <p>Name: {{ rows[0] }}</p>
+        <p>ID: {{ rows[1] }}</p>
+        <p>Role: {{ rows[2] }}</p>
+    </div>
+</body>
+</html>
+<footer style="position: fixed; bottom: 0; width: 100%; align-items: cetner;">
+    <div style="margin: 20px;">
+        <h4></h4>
+        <button onclick="location.href='/'">Home</button>
+        <button onclick="location.href='/signout'">Sign-out</button>
+    </div>
+</footer>

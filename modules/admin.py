@@ -407,11 +407,31 @@ def admin_category():
 
 # TODO: @imStillDebugging admin show users
 @app.route("/admin/users", methods=["GET"])
+@login_required
 def admin_show_users():
-    return
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
+    # else
+    rows = Database().select_public_account_info()
+    for column in rows:
+        print(column)
+    return render_template("admin/users.html", rows = rows)
 
 
 # TODO: @imStillDebugging admin modify users
 @app.route("/admin/users/modify", methods=["POST"])
+@login_required
 def admin_modify_users():
-    return
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
+    # else
+    case_dict = {
+        "delete": Database().delete_user,
+        "confirm": Database().confirm_user,
+        "reject": Database().reject_user
+    }
+    case_dict[request.get_json()["method"]](request.get_json()["id"])
+    
+    return "", 200

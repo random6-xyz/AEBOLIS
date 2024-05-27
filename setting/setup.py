@@ -3,7 +3,7 @@ from os import getenv
 from flask_login import LoginManager
 from modules import app
 from logs.log import setup_acces_logger, setup_signup_logger
-
+from flask import request
 
 # settings
 ip = "0.0.0.0"
@@ -14,7 +14,25 @@ login_manager = LoginManager()
 access_logger = setup_acces_logger()
 signup_logger = setup_signup_logger()
 
+def write_access_log(head: str, student_id: int):
+    access_logger.info(
+        head,
+        extra={
+            "remote_addr": request.remote_addr,
+            "id": student_id,
+        },
+    )
 
+
+def write_signup_log(head: str, student_id: int):
+    signup_logger.info(
+        head,
+        extra={
+            "remote_addr": request.remote_addr,
+            "id": student_id,
+        },
+    )
+    
 def db_setup():
     db = Database()
 
@@ -65,15 +83,15 @@ def db_setup():
 
     db.execute(
         """
-                CREATE TABLE IF NOT EXISTS USER(
-                    ID INTEGER PRIMARY KEY,
-                    NAME TEXT NOT NULL, 
-                    HASHED_PASSWORD TEXT NOT NULL,
-                    SALT TEXT NOT NULL,
-                    IS_ADMIN INTEGER NOT NULL,
-                    IS_CONFIRMED INTEGER
-                    );
-                """
+            CREATE TABLE IF NOT EXISTS USER(
+            ID INTEGER PRIMARY KEY,
+            NAME TEXT NOT NULL, 
+            HASHED_PASSWORD TEXT NOT NULL,
+            SALT TEXT NOT NULL,
+            IS_ADMIN INTEGER NOT NULL,
+            IS_CONFIRMED INTEGER
+            );
+        """
     )
 
     db.execute(
