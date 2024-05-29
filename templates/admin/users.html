@@ -2,6 +2,79 @@
 <head>
     <meta charset="UTF-8">
     <title>Data</title>
+    <script>
+        async function deleteUser(event) {
+            let row = event.target.parentNode.parentNode;
+            const data = {
+                "method": "delete",
+                "id": row.cells[0].textContent.trim(),
+            };
+
+            const response = await fetch('/admin/users/modify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                alert("User deleted");
+                window.location.reload();
+            }
+            else {
+                alert("Error");
+            }
+        }
+
+        async function confirmUser(event) {
+            let row = event.target.parentNode.parentNode;
+            const data = {
+                "method": "confirm",
+                "id": row.cells[0].textContent.trim(),
+            };
+
+            const response = await fetch('/admin/users/modify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                alert("User confirmed");
+                window.location.reload();
+            }
+            else {
+                alert("Error");
+            }
+        }
+
+        async function rejectUser(event) {
+            let row = event.target.parentNode.parentNode;
+            const data = {
+                "method": "reject",
+                "id": row.cells[0].textContent.trim(),
+            };
+
+            const response = await fetch('/admin/users/modify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                alert("User rejected");
+                window.location.reload();
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
 </head>
 <body style="text-align: center">
     <h1>Book apply list</h1>
@@ -12,6 +85,7 @@
                 <th>NAME</th>
                 <th>IS_ADMIN</th>
                 <th>IS_CONFIRMED</th>
+                <th>BUTTONS</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +94,11 @@
                 {% for column in row %}
                 <td style="width: 10%;">{{ column }}</td>
                 {% endfor %}
+                <td style="width: 10%;">
+                    <button onclick="deleteUser(event)">DELETE</button>
+                    <button onclick="confirmUser(event)">CONFIRM</button>
+                    <button onclick="rejectUser(event)">REJECT</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

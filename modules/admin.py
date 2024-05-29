@@ -227,7 +227,6 @@ def admin_logs():
         return "", 200
 
 
-# TODO: @random6 append username in table
 # admin show applys
 @app.route("/admin/apply", methods=["GET", "POST"])
 @login_required
@@ -405,7 +404,6 @@ def admin_category():
         return "", 200
 
 
-# TODO: @imStillDebugging admin show users
 @app.route("/admin/users", methods=["GET"])
 @login_required
 def admin_show_users():
@@ -419,7 +417,6 @@ def admin_show_users():
     return render_template("admin/users.html", rows=rows)
 
 
-# TODO: @imStillDebugging admin modify users
 @app.route("/admin/users/modify", methods=["POST"])
 @login_required
 def admin_modify_users():

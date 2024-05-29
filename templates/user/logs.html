@@ -2,6 +2,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Data</title>
+    <script>
+        async function returnBook(event) {
+            let row = event.target.parentNode.parentNode;
+            const data = {
+                "time": row.cells[3].textContent.trim(),
+            };
+
+            const response = await fetch('/profile/logs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                alert("Book returned");
+                window.location.reload();
+            }
+            else {
+                alert("Error");
+            }
+        }
+    </script>
 </head>
 <body style="text-align: center">
     <h1>BOOK CHECKOUT LIST</h1>
@@ -12,6 +36,7 @@
                 <th>TITLE</th>
                 <th>RETURN</th>
                 <th>TIME</th>
+                <th>BUTTON</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +45,11 @@
                 {% for column in row %}
                 <td style="width: 10%;">{{ column }}</td>
                 {% endfor %}
+                {% if row[2] == 0 %}
+                <td style="width: 10%;">
+                    <button onclick="returnBook(event)">RETURN</button>
+                </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>

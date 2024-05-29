@@ -7,15 +7,13 @@
 </head>
 <body style="text-align: center">
     <h1>My Profile</h1>
-    <a href="/profile/logs"><button>view logs</button></a>
-    <a href="/profile/book_apply_list"><button>view applied book list</button></a>
-    <a href="/profile/signout"><button>sign out</button></a>
-
+    <button onclick="location.href='/profile/logs'">view logs</button>
+    <button onclick="location.href='/profile/book_apply_list'">Applied books</button>
     <div>
         <h2>Profile Information</h2>
-        <p>Name: {{ rows[0] }}</p>
-        <p>ID: {{ rows[1] }}</p>
-        <p>Role: {{ rows[2] }}</p>
+        <label>Name:</label><label> {{ rows[0] }}</label><br></br>
+        <label>ID:</label><label id="id"> {{ rows[1] }}</label><br></br>
+        <label>Role:</plabel><label> {{ rows[2] }}</label><br></br>
     </div>
 </body>
 </html>

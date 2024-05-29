@@ -143,9 +143,9 @@ def profile():
 @login_required
 def profile_log_view():
     if request.method == "POST":
-        Database().return_book(request.get_json()["id"], request.get_json()["time"])
+        Database().return_book(current_user.get_id(), request.get_json()["time"])
         return "", 200
-    rows = Database().select_book_checkout_list(request.get_json()["id"])
+    rows = Database().select_book_checkout_list(current_user.get_id())
     return render_template("user/logs.html", rows=rows)
 
 
