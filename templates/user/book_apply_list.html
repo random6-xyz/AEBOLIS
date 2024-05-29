@@ -1,0 +1,37 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <title>Data</title>
+</head>
+<body style="text-align: center">
+    <h1>BOOK APPLY LIST</h1>
+    <table style="margin-left: auto; margin-right: auto;">
+        <thead>
+            <tr>
+                <th>STUDENT_NUMBER</th>
+                <th>TITLE</th>
+                <th>PUBLISHER</th>
+                <th>WRITER</th>
+                <th>REASON</th>
+                <th>CONFIRM</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for column in row %}
+                <td style="width: 10%;">{{ column }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+<footer style="position: fixed; bottom: 0; width: 100%; align-items: cetner;">
+    <div style="margin: 20px;">
+        <h4></h4>
+        <button onclick="location.href='/'">Home</button>
+        <button onclick="location.href='/signout'">Sign-out</button>
+    </div>
+</footer>
+</html>

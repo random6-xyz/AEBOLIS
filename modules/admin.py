@@ -1,4 +1,5 @@
 from flask import render_template, request
+from flask_login import login_required
 from pandas import read_excel
 from werkzeug.utils import secure_filename
 from modules import app
@@ -18,42 +19,12 @@ def check_parameters(data, parameters):
     return True
 
 
-# check session is admin's
-def check_admin(session):
-    # check session exists
-    if not session:
-        error_messgae = "Not authenticated, You are not admin"
-        return render_template("error.html", data=error_messgae), 401
-    # FIXME: @random6 remove if statement when deploy
-    credential = get_user_info(True if session else False)
-    # return if role isn't admin
-    if credential["role"] != "admin":
-        error_messgae = "Not authenticated, You are not admin"
-        return render_template("error.html", data=error_messgae), 401
-
-    return True
-
-
-# check parameters and role
-def check_parameters_admin(data, parameters, session):
-    # check role with session
-    result = check_parameters(data, parameters)
-    if result != True:
-        return result
-
-    # check parameters
-    result = check_admin(session)
-    if result != True:
-        return result
-
-    return True
-
-
 @app.route("/admin/books", methods=["GET"])
+@login_required
 def admin_books():
-    result = check_admin(request.cookies.get("session"))
-    if result != True:
-        return result
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
 
     book_data = []
 
@@ -74,19 +45,24 @@ def admin_books():
 
 # add books
 @app.route("/admin/books/add", methods=["POST", "GET"])
+@login_required
 def admin_add_books():
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
+
     if request.method == "GET":
-        result = check_admin(request.cookies.get("session"))
-        if result != True:
-            return result
+        if get_user_info()["role"] != True:
+            error_messgae = "Not authenticated, You are not admin"
+            return render_template("error.html", data=error_messgae), 401
         return render_template("admin/add_book.html"), 200
 
     elif request.method == "POST":
+
         data = request.get_json()
-        result = check_parameters_admin(
+        result = check_parameters(
             data,
             ["available", "title", "writer", "publisher", "amount", "field"],
-            request.cookies.get("session"),
         )
         if result != True:
             return result
@@ -122,10 +98,11 @@ def admin_add_books():
 
 # modifying books for admin
 @app.route("/admin/books/modify", methods=["POST", "GET"])
+@login_required
 def admin_modify_books():
-    result = check_admin(request.cookies.get("session"))
-    if result != True:
-        return result
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
 
     # return modify pages
     if request.method == "GET":
@@ -185,12 +162,16 @@ def admin_modify_books():
 
 # admin delete book
 @app.route("/admin/books/delete", methods=["POST"])
+@login_required
 def admin_delete_books():
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
+
     data = request.get_json()
-    result = check_parameters_admin(
+    result = check_parameters(
         data,
         ["title"],
-        request.cookies.get("session"),
     )
     if result != True:
         return result
@@ -206,10 +187,11 @@ def admin_delete_books():
 
 # admin modify logs
 @app.route("/admin/logs", methods=["GET", "POST"])
+@login_required
 def admin_logs():
-    result = check_admin(request.cookies.get("session"))
-    if result != True:
-        return result
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
 
     if request.method == "GET":
         logs = load_userbooks_log()
@@ -248,10 +230,11 @@ def admin_logs():
 # TODO: @random6 append username in table
 # admin show applys
 @app.route("/admin/apply", methods=["GET", "POST"])
+@login_required
 def admin_apply():
-    result = check_admin(request.cookies.get("session"))
-    if result != True:
-        return result
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
 
     # show apply to admin
     if request.method == "GET":
@@ -295,10 +278,11 @@ def admin_apply():
 # FIXME: @random6 What is the purpose of this function???
 # show and modify checkout history
 @app.route("/admin/checkout", methods=["GET", "POST"])
+@login_required
 def admin_checkout():
-    result = check_admin(True if request.cookies.get("session") else False)
-    if result != True:
-        return result
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
 
     # show checkout history
     if request.method == "GET":
@@ -344,10 +328,11 @@ def process_xlsx(file_name):
 
 # upload .xlsx file
 @app.route("/admin/books/upload", methods=["GET", "POST"])
+@login_required
 def admin_upload_books():
-    result = check_admin(request.cookies.get("session"))
-    if result != True:
-        return result
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
 
     if request.method == "POST":
         # save xlsx
@@ -389,14 +374,14 @@ def admin_upload_books():
 
 
 @app.route("/admin/category", methods=["GET", "POST"])
+@login_required
 def admin_category():
-    result = check_admin(request.cookies.get("session"))
-    if result != True:
-        return result
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
 
     if request.method == "GET":
         result = Database().execute("SELECT category FROM category")
-        print(result)
         return render_template("admin/category.html", data=result)
 
     elif request.method == "POST":
@@ -422,11 +407,31 @@ def admin_category():
 
 # TODO: @imStillDebugging admin show users
 @app.route("/admin/users", methods=["GET"])
+@login_required
 def admin_show_users():
-    return
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
+    # else
+    rows = Database().select_public_account_info()
+    for column in rows:
+        print(column)
+    return render_template("admin/users.html", rows=rows)
 
 
 # TODO: @imStillDebugging admin modify users
 @app.route("/admin/users/modify", methods=["POST"])
+@login_required
 def admin_modify_users():
-    return
+    if get_user_info()["role"] != True:
+        error_messgae = "Not authenticated, You are not admin"
+        return render_template("error.html", data=error_messgae), 401
+    # else
+    case_dict = {
+        "delete": Database().delete_user,
+        "confirm": Database().confirm_user,
+        "reject": Database().reject_user,
+    }
+    case_dict[request.get_json()["method"]](request.get_json()["id"])
+
+    return "", 200

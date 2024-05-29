@@ -2,9 +2,8 @@ from databases.db import Database
 from os import getenv
 from flask_login import LoginManager
 from modules import app
-
 from logs.log import setup_acces_logger, setup_signup_logger
-
+from flask import request
 
 # settings
 ip = "0.0.0.0"
@@ -16,20 +15,28 @@ access_logger = setup_acces_logger()
 signup_logger = setup_signup_logger()
 
 
+def write_access_log(head: str, student_id: int):
+    access_logger.info(
+        head,
+        extra={
+            "remote_addr": request.remote_addr,
+            "id": student_id,
+        },
+    )
+
+
+def write_signup_log(head: str, student_id: int):
+    signup_logger.info(
+        head,
+        extra={
+            "remote_addr": request.remote_addr,
+            "id": student_id,
+        },
+    )
+
+
 def db_setup():
     db = Database()
-
-    db.execute(
-        """
-        CREATE TABLE IF NOT EXISTS USER(
-            ID INTEGER PRIMARY KEY,
-            NAME TEXT, 
-            HASHED_PASSWORD TEXT,
-            SALT TEXT,
-            IS_CONFIRMED INTEGER
-        );
-    """
-    )
 
     db.execute(
         "CREATE TABLE IF NOT EXISTS userbooks \
@@ -76,18 +83,17 @@ def db_setup():
     """
     )
 
-    # create table if not exist
     db.execute(
         """
-                CREATE TABLE IF NOT EXISTS USER(
-                    ID INTEGER PRIMARY KEY,
-                    NAME TEXT NOT NULL, 
-                    HASHED_PASSWORD TEXT NOT NULL,
-                    SALT TEXT NOT NULL,
-                    IS_ADMIN INTEGER NOT NULL,
-                    IS_CONFIRMED INTEGER
-                    );
-                """
+            CREATE TABLE IF NOT EXISTS USER(
+            ID INTEGER PRIMARY KEY,
+            NAME TEXT NOT NULL, 
+            HASHED_PASSWORD TEXT NOT NULL,
+            SALT TEXT NOT NULL,
+            IS_ADMIN INTEGER NOT NULL,
+            IS_CONFIRMED INTEGER
+            );
+        """
     )
 
     db.execute(
@@ -97,6 +103,22 @@ def db_setup():
         );
     """
     )
+
+    if (db.select_account_info(11111111)) is None:
+        db.execute(
+            """
+            INSERT INTO USER
+            SELECT * FROM (SELECT 
+                11111111, 
+                'adimin',
+                'f8c6e58692da68991e92494a67414766ecd4db590666dc45c7f446953797df8544bb77f823095d3b5f2106a217b36ab40d73f0ac95b9aca5fafcc46c46473b66',
+                '$2b$12$BEJ0KFPNZ.exUUKPDCp4j.',
+                1,
+                1
+            )
+        """
+        )
+
 
 def login_setup():
     login_manager.init_app(app)

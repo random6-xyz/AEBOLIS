@@ -26,7 +26,7 @@ class Database:
         self.connection.commit()
 
     def select_account_info(self, ID: int) -> tuple:
-        self.execute(
+        self.execute_only(
             """
                 SELECT *
                 FROM USER
@@ -49,7 +49,7 @@ class Database:
                 "NAME": NAME,
                 "HASHED_PASSWORD": HASHED_PASSWORD,
                 "SALT": SALT,
-                "IS_CONFIRMED": ("NULL" if (IS_CONFIRMED is None) else IS_CONFIRMED),
+                "IS_CONFIRMED": IS_CONFIRMED,
             },
         )
 
@@ -61,3 +61,106 @@ class Database:
             """,
             {"ID": ID},
         )
+
+    def confirm_user(self, ID: int):
+        self.execute_only(
+            """
+                UPDATE USER
+                SET IS_CONFIRMED = 1
+                WHERE ID = :ID ;
+            """,
+            {"ID": ID},
+        )
+
+    def reject_user(self, ID: int):
+        self.execute_only(
+            """
+                UPDATE USER
+                SET IS_CONFIRMED = 0
+                WHERE ID = :ID ;
+            """,
+            {"ID": ID},
+        )
+
+    def select_public_account_info(self) -> tuple:
+        self.execute_only(
+            """
+                SELECT ID, NAME, IS_ADMIN, IS_CONFIRMED
+                FROM USER
+                WHERE IS_ADMIN = 1
+                ORDER BY ID ASC;
+            """
+        )
+        user_data = list(self.cursor.fetchall())
+        self.execute_only(
+            """
+                SELECT ID, NAME, IS_ADMIN, IS_CONFIRMED
+                FROM USER
+                WHERE IS_CONFIRMED IS NULL
+                ORDER BY ID ASC;
+            """
+        )
+        user_data.extend(list(self.cursor.fetchall()))
+
+        self.execute_only(
+            """
+                SELECT ID, NAME, IS_ADMIN, IS_CONFIRMED
+                FROM USER
+                WHERE IS_CONFIRMED IS NOT NULL
+                AND IS_ADMIN = 0
+                ORDER BY ID ASC;
+            """
+        )
+
+        user_data.extend(list(self.cursor.fetchall()))
+
+        return tuple(user_data)
+
+    def select_book_apply_list(self, STUDENT_NUMBER: int) -> tuple:
+        self.execute_only(
+            """
+                SELECT 
+                STUDENT_NUMBER, TITLE, PUBLISHER, WRITER, REASON, CONFIRM
+                FROM USERAPPLYS
+                WHERE STUDENT_NUMBER = :STUDENT_NUMBER 
+                ORDER BY ID DESC;
+            """,
+            {"STUDENT_NUMBER": STUDENT_NUMBER},
+        )
+        return self.cursor.fetchall()
+
+    def select_book_checkout_list(self, STUDENT_NUMBER: int) -> tuple:
+        self.execute_only(
+            """
+                SELECT STUDENT_NUMBER, TITLE, RETURN, TIME
+                FROM CHECKOUT_HISTORY
+                WHERE STUDENT_NUMBER = :STUDENT_NUMBER 
+                ORDER BY RETURN ASC, ID DESC;
+            """,
+            {"STUDENT_NUMBER": STUDENT_NUMBER},
+        )
+        return self.cursor.fetchall()
+
+    def return_book(self, STUDENT_NUMBER: int, TIME: str) -> None:
+        self.execute_only(
+            """
+                UPDATE CHECKOUT_HISTORY
+                SET RETURN = 1
+                WHERE STUDENT_NUMBER = :STUDENT_NUMBER
+                AND TIME = :TIME
+            """,
+            {"STUDENT_NUMBER": STUDENT_NUMBER, "TIME": TIME},
+        )
+
+    def select_profile_data(self, ID: int) -> tuple:
+        self.execute_only(
+            """
+                SELECT NAME, ID, IS_ADMIN
+                FROM USER
+                WHERE ID = :ID;
+            """,
+            {"ID": ID},
+        )
+        profile_data = list(self.cursor.fetchone())
+        profile_data[2] = "Admin" if (profile_data[2] == 1) else "User"
+        return profile_data

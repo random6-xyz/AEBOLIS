@@ -3,9 +3,9 @@
     <script>
         async function submit() {
             let post_data = {
-                "username": document.getElementById("username"),
-                "student_id": document.getElementById("student_id"),
-                "password": document.getElementById("password"),
+                "username": document.getElementById("username").value,
+                "student_id": document.getElementById("student_id").value,
+                "password": document.getElementById("password").value,
             }
 
             const response = await fetch('/signup', {
