@@ -71,7 +71,7 @@ class Database:
             """,
             {"ID": ID},
         )
-        
+
     def reject_user(self, ID: int):
         self.execute_only(
             """
@@ -81,7 +81,7 @@ class Database:
             """,
             {"ID": ID},
         )
-    
+
     def select_public_account_info(self) -> tuple:
         self.execute_only(
             """
@@ -111,12 +111,12 @@ class Database:
                 ORDER BY ID ASC;
             """
         )
-        
+
         user_data.extend(list(self.cursor.fetchall()))
 
         return tuple(user_data)
-    
-    def select_book_apply_list(self, STUDENT_NUMBER : int) -> tuple:
+
+    def select_book_apply_list(self, STUDENT_NUMBER: int) -> tuple:
         self.execute_only(
             """
                 SELECT 
@@ -125,11 +125,11 @@ class Database:
                 WHERE STUDENT_NUMBER = :STUDENT_NUMBER 
                 ORDER BY ID DESC;
             """,
-            {"STUDENT_NUMBER": STUDENT_NUMBER}
+            {"STUDENT_NUMBER": STUDENT_NUMBER},
         )
         return self.cursor.fetchall()
-        
-    def select_book_checkout_list(self, STUDENT_NUMBER : int) -> tuple:
+
+    def select_book_checkout_list(self, STUDENT_NUMBER: int) -> tuple:
         self.execute_only(
             """
                 SELECT STUDENT_NUMBER, TITLE, RETURN, TIME
@@ -137,11 +137,11 @@ class Database:
                 WHERE STUDENT_NUMBER = :STUDENT_NUMBER 
                 ORDER BY RETURN ASC, ID DESC;
             """,
-            {"STUDENT_NUMBER": STUDENT_NUMBER}
+            {"STUDENT_NUMBER": STUDENT_NUMBER},
         )
         return self.cursor.fetchall()
-    
-    def return_book(self, STUDENT_NUMBER : int, TIME : str) -> None:
+
+    def return_book(self, STUDENT_NUMBER: int, TIME: str) -> None:
         self.execute_only(
             """
                 UPDATE CHECKOUT_HISTORY
@@ -149,12 +149,9 @@ class Database:
                 WHERE STUDENT_NUMBER = :STUDENT_NUMBER
                 AND TIME = :TIME
             """,
-            {
-                "STUDENT_NUMBER": STUDENT_NUMBER,
-                "TIME": TIME
-            }
+            {"STUDENT_NUMBER": STUDENT_NUMBER, "TIME": TIME},
         )
-        
+
     def select_profile_data(self, ID: int) -> tuple:
         self.execute_only(
             """
@@ -162,7 +159,7 @@ class Database:
                 FROM USER
                 WHERE ID = :ID;
             """,
-            {"ID": ID}
+            {"ID": ID},
         )
         profile_data = list(self.cursor.fetchone())
         profile_data[2] = "Admin" if (profile_data[2] == 1) else "User"

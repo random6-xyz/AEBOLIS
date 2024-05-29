@@ -14,6 +14,7 @@ login_manager = LoginManager()
 access_logger = setup_acces_logger()
 signup_logger = setup_signup_logger()
 
+
 def write_access_log(head: str, student_id: int):
     access_logger.info(
         head,
@@ -32,7 +33,8 @@ def write_signup_log(head: str, student_id: int):
             "id": student_id,
         },
     )
-    
+
+
 def db_setup():
     db = Database()
 

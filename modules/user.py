@@ -7,6 +7,7 @@ from databases.db import Database
 from modules.auth import get_user_info
 from logs.log import save_userbooks_log
 
+
 # check data has essential parameters
 def check_parameters(data, parameters):
     data = request.get_json()
@@ -135,26 +136,28 @@ def checkout():
 @login_required
 def profile():
     rows = Database().select_profile_data(current_user.get_id())
-    return render_template("user/profile.html", rows = rows)
+    return render_template("user/profile.html", rows=rows)
+
 
 @app.route("/profile/logs", methods=["GET", "POST"])
 @login_required
 def profile_log_view():
     if request.method == "POST":
-        Database().return_book(
-            request.get_json()["id"],
-            request.get_json()["time"]
-        )
+        Database().return_book(request.get_json()["id"], request.get_json()["time"])
         return "", 200
     rows = Database().select_book_checkout_list(request.get_json()["id"])
-    return render_template("user/logs.html", rows = rows)
+    return render_template("user/logs.html", rows=rows)
+
 
 @app.route("/profile/book_apply_list", methods=["GET"])
 @login_required
 def show_book_apply_list():
     rows = Database().select_book_apply_list(current_user.get_id())
-    return render_template("user/book_apply_list.html", rows = rows)
+    return render_template("user/book_apply_list.html", rows=rows)
+
+
 ##########################
+
 
 # user applys books
 @app.route("/apply", methods=["POST", "GET"])

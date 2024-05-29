@@ -416,7 +416,7 @@ def admin_show_users():
     rows = Database().select_public_account_info()
     for column in rows:
         print(column)
-    return render_template("admin/users.html", rows = rows)
+    return render_template("admin/users.html", rows=rows)
 
 
 # TODO: @imStillDebugging admin modify users
@@ -430,8 +430,8 @@ def admin_modify_users():
     case_dict = {
         "delete": Database().delete_user,
         "confirm": Database().confirm_user,
-        "reject": Database().reject_user
+        "reject": Database().reject_user,
     }
     case_dict[request.get_json()["method"]](request.get_json()["id"])
-    
+
     return "", 200

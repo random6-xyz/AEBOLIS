@@ -67,7 +67,7 @@ def sign_in():
         row = Database().select_account_info(student_id)
         if (
             (row is not None)
-            and (hash_password(password, row[3]) == row[2]) # check password
+            and (hash_password(password, row[3]) == row[2])  # check password
             and row[5]
         ):
             user = User(row)
@@ -79,13 +79,15 @@ def sign_in():
 
     return render_template("signin.html")
 
+
 # API : sign out, delete session
-@app.route("/profile/signout", methods=["POST", "GET"])
+@app.route("/signout", methods=["POST", "GET"])
 @login_required
 def sign_out():
-        write_access_log("Signout successed", current_user.get_id())
-        logout_user()
-        return redirect(url_for("index"))
+    write_access_log("Signout successed", current_user.get_id())
+    logout_user()
+    return redirect(url_for("index"))
+
 
 # API : delete account
 @app.route("/delete_account", methods=["POST", "GET"])
